@@ -1,24 +1,25 @@
-"""Logs the cheapest SYD<->SGN return fare for a grid of dates. Run daily by GitHub Actions."""
+"""Logs the cheapest SYD<->SGN return fare (in AUD) for a grid of dates. Run daily by GitHub Actions."""
 import csv, os, random, re, time
 from datetime import date, datetime, timedelta, timezone
-from fast_flights import FlightData, Passengers, get_flights
+from fast_flights import FlightData, Passengers, create_filter, get_flights_from_filter
 
 ORIGIN, DEST = "SYD", "SGN"
 FIRST, LAST, STEP_DAYS = date(2027, 8, 1), date(2027, 11, 15), 9   # departure window
 TRIP_DAYS = [12, 15]                                               # trip lengths to track
+CURRENCY = "AUD"
 OUT = "data/prices.csv"
 FIELDS = ["checked", "depart", "return", "days", "price", "airline", "stops"]
 
 
 def cheapest(depart, ret):
-    res = get_flights(
+    filt = create_filter(
         flight_data=[
             FlightData(date=depart.isoformat(), from_airport=ORIGIN, to_airport=DEST),
             FlightData(date=ret.isoformat(), from_airport=DEST, to_airport=ORIGIN),
         ],
         trip="round-trip", seat="economy", passengers=Passengers(adults=1),
-        fetch_mode="fallback",
     )
+    res = get_flights_from_filter(filt, currency=CURRENCY, mode="fallback")
     best = None
     for f in res.flights:
         digits = re.sub(r"[^\d.]", "", f.price.replace(",", ""))
