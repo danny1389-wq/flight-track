@@ -1,35 +1,34 @@
-"""Logs the cheapest SYD<->SGN return fare (in AUD) for a grid of dates. Run daily by GitHub Actions."""
-import csv, os, random, re, time
+"""Logs the cheapest SYD<->SGN return fare (Australian market, AUD) via SerpApi. Run by GitHub Actions."""
+import csv, json, os, random, time, urllib.parse, urllib.request
 from datetime import date, datetime, timedelta, timezone
-from fast_flights import FlightData, Passengers, create_filter, get_flights_from_filter
-import fast_flights.core as ffc
-_orig_fetch = ffc.fetch
-def _fetch_au(params):
-    return _orig_fetch({**params, "gl": "AU"})
-ffc.fetch = _fetch_au
 
 ORIGIN, DEST = "SYD", "SGN"
-FIRST, LAST, STEP_DAYS = date(2027, 8, 1), date(2027, 11, 15), 9   # departure window
-TRIP_DAYS = [12, 15]                                               # trip lengths to track
-CURRENCY = "AUD"
+DEPARTURES = [date(2027, 8, 1), date(2027, 8, 10), date(2027, 8, 19), date(2027, 8, 28),
+              date(2027, 9, 15), date(2027, 10, 12), date(2027, 11, 8)]
+TRIP_DAYS = [12, 15]
 OUT = "data/prices.csv"
 FIELDS = ["checked", "depart", "return", "days", "price", "airline", "stops"]
+KEY = os.environ["SERPAPI_KEY"]
 
 
 def cheapest(depart, ret):
-    filt = create_filter(
-        flight_data=[
-            FlightData(date=depart.isoformat(), from_airport=ORIGIN, to_airport=DEST),
-            FlightData(date=ret.isoformat(), from_airport=DEST, to_airport=ORIGIN),
-        ],
-        trip="round-trip", seat="economy", passengers=Passengers(adults=1),
-    )
-    res = get_flights_from_filter(filt, currency=CURRENCY, mode="fallback")
+    q = urllib.parse.urlencode({
+        "engine": "google_flights", "departure_id": ORIGIN, "arrival_id": DEST,
+        "outbound_date": depart.isoformat(), "return_date": ret.isoformat(),
+        "type": 1, "currency": "AUD", "hl": "en", "gl": "au", "api_key": KEY})
+    with urllib.request.urlopen("https://serpapi.com/search.json?" + q, timeout=90) as r:
+        data = json.load(r)
+    if "error" in data:
+        raise RuntimeError(data["error"])
     best = None
-    for f in res.flights:
-        digits = re.sub(r"[^\d.]", "", f.price.replace(",", ""))
-        if digits and (best is None or float(digits) < best[0]):
-            best = (float(digits), f.name.replace(",", " "), f.stops)
+    for f in data.get("best_flights", []) + data.get("other_flights", []):
+        price = f.get("price")
+        if price is None:
+            continue
+        if best is None or price < best[0]:
+            legs = f.get("flights") or [{}]
+            airline = (legs[0].get("airline") or "").replace(",", " ")
+            best = (float(price), airline, len(f.get("layovers", [])))
     return best
 
 
@@ -42,8 +41,7 @@ def main():
         w = csv.writer(fh)
         if new_file:
             w.writerow(FIELDS)
-        d = FIRST
-        while d <= LAST:
+        for d in DEPARTURES:
             for n in TRIP_DAYS:
                 ret = d + timedelta(days=n)
                 try:
@@ -56,8 +54,7 @@ def main():
                     failed += 1
                     print(f"{d} +{n}d failed: {e}")
                 fh.flush()
-                time.sleep(random.uniform(4, 8))   # be polite
-            d += timedelta(days=STEP_DAYS)
+                time.sleep(random.uniform(1, 3))
     print(f"saved {ok}, no result {failed}")
     if ok == 0:
         raise SystemExit("No fares saved; check the log above.")
