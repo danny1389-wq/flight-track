@@ -37,7 +37,7 @@ h1{font-size:clamp(2rem,6vw,3.4rem);font-weight:800;letter-spacing:-.02em;margin
 const $=id=>document.getElementById(id);let chart;
 const fmtD=s=>new Date(s+"T00:00:00").toLocaleDateString("en-AU",{day:"numeric",month:"short"});
 const money=n=>Math.round(n).toLocaleString("en-AU");
-const AU=0.837; // estimate: Australian price divided by tracker price (487 / 582)
+const AU=0.826; // estimate: Australian price divided by tracker price (487 / 582)
 fetch("data/prices.csv?"+Date.now()).then(r=>r.ok?r.text():"").then(t=>{
   const [h,...ls]=t.trim().split("\n");
   if(!h||!ls.length){$("meta").textContent="";$("empty").hidden=false;return}
