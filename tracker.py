@@ -2,6 +2,11 @@
 import csv, os, random, re, time
 from datetime import date, datetime, timedelta, timezone
 from fast_flights import FlightData, Passengers, create_filter, get_flights_from_filter
+import fast_flights.core as ffc
+_orig_fetch = ffc.fetch
+def _fetch_au(params):
+    return _orig_fetch({**params, "gl": "AU"})
+ffc.fetch = _fetch_au
 
 ORIGIN, DEST = "SYD", "SGN"
 FIRST, LAST, STEP_DAYS = date(2027, 8, 1), date(2027, 11, 15), 9   # departure window
