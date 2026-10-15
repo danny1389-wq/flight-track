@@ -1,7 +1,7 @@
 name: Track fares
 on:
   schedule:
-    - cron: "0 20 * * *"
+    - cron: "0 20 */2 * *"
   workflow_dispatch:
 permissions:
   contents: write
@@ -13,8 +13,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install "fast-flights==2.2" "primp==0.15.0" 
       - run: python tracker.py
+        env:
+          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
       - name: Commit new data
         if: always()
         run: |
