@@ -9,6 +9,7 @@ ORIGIN, DEST = "SYD", "SGN"
 FIRST, LAST, STEP_DAYS = date(2027, 8, 1), date(2027, 11, 15), 4
 TRIP_DAYS = [12, 15]
 AIRLINES = ("vietjet", "jetstar")   # only these airlines are tracked
+ALERT = 400      # A$ a trip newly at or under this triggers its own urgent email
 CAP = 500        # A$ estimated Australian price at or under this counts as a deal
 RATIO = 0.837    # Google's A$ price for you divided by what this tracker sees (487 / 582)
 HIST = "data/prices.csv"
@@ -82,10 +83,18 @@ def write_report(trips, new_deals, summary):
     open("report.md", "w").write("\n".join(out) + "\n")
 
 
+def write_alert(great):
+    out = [f"@{USER} **A trip has dropped to A${ALERT} or under.** Sydney to Ho Chi Minh City, nonstop.", ""]
+    out += table(sorted(great, key=lambda t: t["price"]))
+    out += ["", "Prices are estimates. Click the link and confirm on Google Flights before buying, and check what checked baggage costs."]
+    open("alert.md", "w").write("\n".join(out) + "\n")
+
+
 def main():
     os.makedirs("data", exist_ok=True)
-    if os.path.exists("report.md"):
-        os.remove("report.md")
+    for old_file in ("report.md", "alert.md"):
+        if os.path.exists(old_file):
+            os.remove(old_file)
     now = datetime.now(timezone.utc)
     prev = {}
     if os.path.exists(LATEST):
@@ -97,7 +106,7 @@ def main():
                   if any(a in t["airline"].lower() for a in AIRLINES)}
     trips = dict(prev_trips)
     new_hist = not os.path.exists(HIST)
-    new_deals, ok, none = [], 0, 0
+    new_deals, great, ok, none = [], [], 0, 0
     with open(HIST, "a", newline="") as fh:
         w = csv.writer(fh)
         if new_hist:
@@ -124,6 +133,8 @@ def main():
                         w.writerow([now.isoformat(), d, ret, n, price, airline, 0])
                     if price <= CAP and (not old or old["price"] > CAP):
                         new_deals.append(trips[key])
+                    if price <= ALERT and (not old or old["price"] > ALERT):
+                        great.append(trips[key])
                     ok += 1
                 else:
                     none += 1
@@ -142,6 +153,8 @@ def main():
     manual = os.environ.get("EVENT") == "workflow_dispatch"
     if new_deals or summary_due or manual:
         write_report(trips, new_deals, summary_due or manual)
+    if great:
+        write_alert(great)
     json.dump({"updated": now.isoformat(), "cap": CAP, "last_summary": summary_key if summary_due else prev.get("last_summary"),
                "trips": trips}, open(LATEST, "w"))
 
