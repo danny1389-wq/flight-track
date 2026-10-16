@@ -6,7 +6,7 @@ from datetime import date, datetime, timedelta, timezone
 from fast_flights import FlightData, Passengers, create_filter, get_flights_from_filter
 
 ORIGIN, DEST = "SYD", "SGN"
-FIRST, LAST, STEP_DAYS = date(2027, 8, 1), date(2027, 11, 15), 4
+FIRST, LAST, STEP_DAYS = date(2027, 8, 1), date(2027, 11, 15), 1
 TRIP_DAYS = [12, 15]
 AIRLINES = ("vietjet", "jetstar")   # only these airlines are tracked
 ALERT = 400      # A$ a trip newly at or under this triggers its own urgent email
