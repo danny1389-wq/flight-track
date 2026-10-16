@@ -34,3 +34,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh issue create --title "Fare update $(date -u +%Y-%m-%d\ %H:%M) UTC" --body-file report.md
+      - name: Send urgent alert
+        if: hashFiles('alert.md') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue create --title "ALERT - trip at or under A\$400 ($(date -u +%Y-%m-%d\ %H:%M) UTC)" --body-file alert.md
