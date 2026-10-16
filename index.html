@@ -4,63 +4,90 @@
 <title>Sydney to Ho Chi Minh City fares</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap">
 <style>
-:root{--bg:#eef3f6;--ink:#14213d;--mute:#5b6b82;--card:#fff;--line:#d5dee6;--low:#0e7c7b;--typ:#5b6b82;--high:#c4553a;--sel:#14213d}
-@media(prefers-color-scheme:dark){:root{--bg:#0f1a2b;--ink:#e8eef5;--mute:#93a3b8;--card:#17263c;--line:#27384f;--low:#4fd1c5;--typ:#93a3b8;--high:#f08a6c;--sel:#e8eef5}}
+:root{--bg:#eef3f6;--ink:#14213d;--mute:#5b6b82;--card:#fff;--line:#d5dee6;--low:#0e7c7b;--warn:#c4553a;--sel:#14213d}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1a2b;--ink:#e8eef5;--mute:#93a3b8;--card:#17263c;--line:#27384f;--low:#4fd1c5;--warn:#f08a6c;--sel:#e8eef5}}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,sans-serif;line-height:1.5}
 main{max-width:1100px;margin:0 auto;padding:32px 20px}
 h1{font-size:clamp(2rem,6vw,3.4rem);font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
-.sub{color:var(--mute);margin:0 0 28px}
+.sub{color:var(--mute);margin:0 0 6px}.sub.stale{color:var(--warn)}
+.tools{margin:0 0 24px;color:var(--mute);font-size:.9rem}.tools a{color:var(--ink);font-weight:600}
 .grid{display:grid;grid-template-columns:minmax(260px,340px) 1fr;gap:20px}
 @media(max-width:760px){.grid{grid-template-columns:1fr}}
-.list{display:flex;flex-direction:column;gap:6px;max-height:560px;overflow:auto}
+.list{display:flex;flex-direction:column;gap:6px;max-height:620px;overflow:auto}
 .row{all:unset;cursor:pointer;display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card)}
 .row:focus-visible{outline:2px solid var(--sel);outline-offset:2px}
 .row[aria-pressed=true]{border-color:var(--sel);box-shadow:inset 3px 0 0 var(--sel)}
-.p{font-weight:600;font-variant-numeric:tabular-nums}.s{font-size:.85rem;grid-column:1/3}
-.low{color:var(--low)}.typical{color:var(--typ)}.high{color:var(--high)}.learn{color:var(--mute)}
+.row small{color:var(--mute)}
+.p{font-weight:600;font-variant-numeric:tabular-nums}.s{font-size:.85rem;grid-column:1/3;color:var(--mute)}
+.s.low{color:var(--low);font-weight:600}
 .panel{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px}
 .panel h2{font-size:1.1rem;margin:0 0 2px}.panel p{margin:0 0 10px;color:var(--mute);font-size:.9rem}
 .panel a{color:var(--ink);font-weight:600}
 .empty{padding:24px;border:1px dashed var(--line);border-radius:8px;color:var(--mute)}
+.foot{margin-top:24px;color:var(--mute);font-size:.85rem}
 </style></head><body><main>
 <h1>Sydney to Ho Chi Minh City</h1>
 <p class="sub" id="meta">Loading fares…</p>
+<p class="tools"><a id="refresh" target="_blank" rel="noopener" href="https://github.com/danny1389-wq/flight-track/actions/workflows/track.yml">Refresh prices now</a> (opens GitHub: click Run workflow, then Run workflow again; takes about 7 minutes). Otherwise it updates itself every hour.</p>
 <div id="app" class="grid" hidden>
   <div class="list" id="list" role="list"></div>
-  <div class="panel"><h2 id="ttl"></h2><p id="note"></p><p><a id="book" target="_blank" rel="noopener">Search this trip on Google Flights</a></p><canvas id="chart" height="260"></canvas></div>
+  <div class="panel"><h2 id="ttl"></h2><p id="note"></p><p><a id="book" target="_blank" rel="noopener">Check live on Google Flights</a></p><canvas id="chart" height="260"></canvas></div>
 </div>
 <div id="empty" class="empty" hidden>No fares yet. In your GitHub repo, open Actions, choose Track fares, and select Run workflow. Refresh this page when it finishes.</div>
+<p class="foot">Nonstop flights only, 12 and 15 day trips. Prices are estimates of what Google Flights shows in Australia, so they can be off by a few percent. The Google link shows the live price.</p>
 </main>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
-const $=id=>document.getElementById(id);let chart;
+const $=id=>document.getElementById(id);
+let chart,data=null,sel=null,histRows=[];
 const fmtD=s=>new Date(s+"T00:00:00").toLocaleDateString("en-AU",{day:"numeric",month:"short"});
+const fmtT=s=>new Date(s).toLocaleString("en-AU",{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"});
 const money=n=>"A$"+Math.round(n).toLocaleString("en-AU");
-fetch("data/prices.csv?"+Date.now()).then(r=>r.ok?r.text():"").then(t=>{
-  const [h,...ls]=t.trim().split("\n");
-  if(!h||!ls.length){$("meta").textContent="";$("empty").hidden=false;return}
-  const cols=h.split(","),rows=ls.map(l=>Object.fromEntries(l.split(",").map((v,i)=>[cols[i],v])));
-  const g={};rows.forEach(r=>{r.price=+r.price;(g[r.depart+"|"+r.days]??=[]).push(r)});
-  const items=Object.entries(g).map(([k,a])=>{
-    a.sort((x,y)=>x.checked<y.checked?-1:1);const last=a[a.length-1];
-    const pct=a.filter(x=>x.price<=last.price).length/a.length;
-    let sig="learn",txt=`Still learning (${a.length} of 5 checks)`;
-    if(a.length>=5){if(pct<=.25){sig="low";txt="Low for this trip"}else if(pct>=.75){sig="high";txt="High for this trip"}else{sig="typical";txt="Typical"}}
-    return{k,a,last,sig,txt,min:Math.min(...a.map(x=>x.price))}}).sort((x,y)=>x.last.price-y.last.price);
-  const latest=rows.map(r=>r.checked).sort().pop();
-  $("meta").textContent=`Last checked ${fmtD(latest)}. Cheapest nonstop return fare per trip in Australian dollars, checked daily.`;
-  $("app").hidden=false;
-  const show=it=>{
-    document.querySelectorAll(".row").forEach(b=>b.setAttribute("aria-pressed",b.dataset.k===it.k));
-    $("ttl").textContent=`${fmtD(it.last.depart)} to ${fmtD(it.last.return)} (${it.last.days} days)`;
-    $("note").textContent=`Now ${money(it.last.price)} with ${it.last.airline}, ${it.last.stops} stop(s). Lowest seen: ${money(it.min)}.`;
-    $("book").href="https://www.google.com/travel/flights?hl=en&curr=AUD&q="+encodeURIComponent(`Flights from SYD to SGN on ${it.last.depart} through ${it.last.return}`);
-    chart&&chart.destroy();
-    chart=new Chart($("chart"),{type:"line",data:{labels:it.a.map(x=>fmtD(x.checked)),datasets:[{data:it.a.map(x=>x.price),borderColor:getComputedStyle(document.body).getPropertyValue("--sel"),tension:.25,pointRadius:3}]},options:{plugins:{legend:{display:false}},scales:{y:{title:{display:true,text:"Cheapest fare (A$)"}},x:{title:{display:true,text:"Date checked"}}}}});
-  };
-  items.forEach(it=>{const b=document.createElement("button");b.className="row";b.dataset.k=it.k;b.setAttribute("aria-pressed",false);
-    b.innerHTML=`<span>${fmtD(it.last.depart)} to ${fmtD(it.last.return)}</span><span class="p">${money(it.last.price)}</span><span class="s ${it.sig}">${it.txt}</span>`;
-    b.onclick=()=>show(it);$("list").appendChild(b)});
-  show(items[0]);
-}).catch(()=>{$("meta").textContent="";$("empty").hidden=false});
+const ago=iso=>{const m=Math.max(0,Math.round((Date.now()-new Date(iso))/60000));
+  if(m<1)return"just now";if(m<60)return m+" min ago";const h=Math.floor(m/60);
+  if(h<48)return h+(h===1?" hour":" hours")+" ago";return Math.floor(h/24)+" days ago"};
+function tick(){
+  if(!data)return;
+  const stale=(Date.now()-new Date(data.updated))>3*3600*1000;
+  const el=$("meta");el.className="sub"+(stale?" stale":"");
+  el.textContent="Prices updated "+ago(data.updated)+(stale?" (older than expected, the hourly run may have failed; check the Actions tab)":"");
+}
+async function load(){
+  try{
+    const r=await fetch("data/latest.json?"+Date.now());if(!r.ok)throw 0;
+    data=await r.json();
+  }catch(e){if(!data){$("meta").textContent="";$("empty").hidden=false}return}
+  try{
+    const t=await(await fetch("data/prices.csv?"+Date.now())).text();
+    const [h,...ls]=t.trim().split("\n");const cols=h.split(",");
+    histRows=ls.map(l=>Object.fromEntries(l.split(",").map((v,i)=>[cols[i],v])));
+  }catch(e){histRows=[]}
+  render();
+}
+function render(){
+  const trips=Object.entries(data.trips).map(([k,t])=>({k,...t})).sort((a,b)=>a.price-b.price);
+  if(!trips.length){$("empty").hidden=false;$("app").hidden=true;return}
+  $("empty").hidden=true;$("app").hidden=false;tick();
+  const cap=data.cap||500;
+  $("list").innerHTML="";
+  trips.forEach(t=>{
+    const b=document.createElement("button");b.className="row";b.dataset.k=t.k;b.setAttribute("aria-pressed",t.k===sel);
+    const deal=t.price<=cap;
+    b.innerHTML=`<span>${fmtD(t.depart)} to ${fmtD(t.return)} <small>${t.days} days</small></span><span class="p">${money(t.price)}</span><span class="s ${deal?"low":""}">${deal?"Under "+money(cap)+" · ":""}${t.airline}</span>`;
+    b.onclick=()=>{sel=t.k;show(t)};$("list").appendChild(b);
+  });
+  show(trips.find(t=>t.k===sel)||trips[0]);
+}
+function show(t){
+  sel=t.k;
+  document.querySelectorAll(".row").forEach(b=>b.setAttribute("aria-pressed",b.dataset.k===t.k));
+  const pts=histRows.filter(r=>r.depart===t.depart&&r.return===t.return);
+  const low=pts.length?Math.min(...pts.map(r=>+r.price)):t.price;
+  $("ttl").textContent=`${fmtD(t.depart)} to ${fmtD(t.return)} (${t.days} days)`;
+  $("note").textContent=`Now about ${money(t.price)} with ${t.airline}, seen ${ago(t.seen)}. Lowest seen: ${money(Math.min(low,t.price))}.`;
+  $("book").href="https://www.google.com/travel/flights?hl=en&curr=AUD&q="+encodeURIComponent(`Flights from SYD to SGN on ${t.depart} through ${t.return}`);
+  chart&&chart.destroy();
+  chart=new Chart($("chart"),{type:"line",data:{labels:pts.map(r=>fmtT(r.checked)),datasets:[{data:pts.map(r=>+r.price),borderColor:getComputedStyle(document.body).getPropertyValue("--sel"),stepped:true,pointRadius:3}]},options:{plugins:{legend:{display:false}},scales:{y:{title:{display:true,text:"Estimated fare (A$)"}},x:{title:{display:true,text:"When the price changed"}}}}});
+}
+load();setInterval(load,5*60*1000);setInterval(tick,30*1000);
 </script></body></html>
