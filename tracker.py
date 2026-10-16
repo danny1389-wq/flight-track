@@ -1,21 +1,19 @@
-"""Rotating nonstop sweep SYD<->SGN (Australian market, AUD) via SerpApi. Flags fares at or under CAP and writes report.md."""
-import csv, json, os, random, signal, time, urllib.error, urllib.parse, urllib.request
-from collections import defaultdict
+"""Hourly free sweep SYD<->SGN via fast-flights. Nonstop only, 12 and 15 day trips.
+Saves the latest estimated Australian price per trip to data/latest.json (the dashboard reads this),
+logs price changes to data/prices.csv, and writes report.md only when there is something to email."""
+import csv, json, os, random, re, signal, time, urllib.parse
 from datetime import date, datetime, timedelta, timezone
+from fast_flights import FlightData, Passengers, create_filter, get_flights_from_filter
 
 ORIGIN, DEST = "SYD", "SGN"
-FIRST, LAST, STEP_DAYS = date(2027, 8, 1), date(2027, 11, 15), 4   # departure dates to sweep
-TRIP_DAYS = [12, 15]                                               # trip lengths to sweep
-CAP = 500        # A$ - fares at or under this are flagged
-PER_RUN = 7      # searches per run: about 217 a month, inside SerpApi's free 250
-OUT = "data/prices.csv"
+FIRST, LAST, STEP_DAYS = date(2027, 8, 1), date(2027, 11, 15), 4
+TRIP_DAYS = [12, 15]
+CAP = 500        # A$ estimated Australian price at or under this counts as a deal
+RATIO = 0.837    # Google's A$ price for you divided by what this tracker sees (487 / 582)
+HIST = "data/prices.csv"
+LATEST = "data/latest.json"
 FIELDS = ["checked", "depart", "return", "days", "price", "airline", "stops"]
-KEY = os.environ["SERPAPI_KEY"]
-USER = "danny1389-wq"   # GitHub username that gets the report email
-
-
-class HardError(Exception):
-    pass
+USER = "danny1389-wq"
 
 
 def _too_slow(signum, frame):
@@ -25,43 +23,22 @@ def _too_slow(signum, frame):
 signal.signal(signal.SIGALRM, _too_slow)
 
 
-def all_combos():
-    combos, d = [], FIRST
-    while d <= LAST:
-        for n in TRIP_DAYS:
-            combos.append((d, d + timedelta(days=n), n))
-        d += timedelta(days=STEP_DAYS)
-    return combos
-
-
-def todays_batch(today):
-    combos = all_combos()
-    start = (today.toordinal() * PER_RUN) % len(combos)
-    return [combos[(start + i) % len(combos)] for i in range(PER_RUN)]
-
-
 def cheapest(depart, ret):
-    q = urllib.parse.urlencode({
-        "engine": "google_flights", "departure_id": ORIGIN, "arrival_id": DEST,
-        "outbound_date": depart.isoformat(), "return_date": ret.isoformat(),
-        "type": 1, "stops": 1, "currency": "AUD", "hl": "en", "gl": "au", "api_key": KEY})
-    with urllib.request.urlopen("https://serpapi.com/search.json?" + q, timeout=90) as r:
-        data = json.load(r)
-    if "error" in data:
-        msg = str(data["error"])
-        if any(w in msg.lower() for w in ("api key", "run out", "limit", "plan", "account")):
-            raise HardError(msg)
-        return None   # no flights for these dates (usually not on sale yet)
+    filt = create_filter(
+        flight_data=[FlightData(date=depart.isoformat(), from_airport=ORIGIN, to_airport=DEST),
+                     FlightData(date=ret.isoformat(), from_airport=DEST, to_airport=ORIGIN)],
+        trip="round-trip", seat="economy", passengers=Passengers(adults=1))
+    res = get_flights_from_filter(filt, currency="AUD", mode="fallback")
     best = None
-    for f in data.get("best_flights", []) + data.get("other_flights", []):
-        price = f.get("price")
-        if price is None or f.get("layovers"):
+    for f in res.flights:
+        if f.stops != 0:
             continue   # nonstop only
-        if best is None or price < best[0]:
-            legs = f.get("flights") or [{}]
-            airline = (legs[0].get("airline") or "").replace(",", " ")
-            best = (float(price), airline, 0)
-    return best
+        digits = re.sub(r"[^\d.]", "", f.price.replace(",", ""))
+        if digits and (best is None or float(digits) < best[0]):
+            best = (float(digits), f.name.replace(",", " "))
+    if best:
+        return round(best[0] * RATIO), best[1]   # estimated Australian price
+    return None
 
 
 def pretty(iso):
@@ -74,88 +51,95 @@ def link(d, ret):
     return "https://www.google.com/travel/flights?hl=en&curr=AUD&q=" + urllib.parse.quote(q)
 
 
-def write_report(today):
-    hist = defaultdict(list)
-    with open(OUT) as fh:
-        for r in csv.DictReader(fh):
-            hist[(r["depart"], r["return"])].append(r)
-    now = date.fromisoformat(today)
-    recent, todays = [], []
-    for (d, ret), a in hist.items():
-        a.sort(key=lambda r: r["checked"])
-        last = a[-1]
-        price = float(last["price"])
-        age = (now - date.fromisoformat(last["checked"])).days
-        if age <= 10:
-            recent.append((price, d, ret, last["airline"], last["checked"]))
-        if last["checked"] == today:
-            before = [float(r["price"]) for r in a[:-1]]
-            if not before:
-                change = "first reading"
-            elif price < before[-1]:
-                change = f"down A${before[-1] - price:.0f}"
-            elif price > before[-1]:
-                change = f"up A${price - before[-1]:.0f}"
-            else:
-                change = "no change"
-            todays.append((price, d, ret, last["airline"], change))
-    recent.sort(); todays.sort()
-    deals = [r for r in recent if r[0] <= CAP]
-    out = [f"@{USER} Fare report for {today}: Sydney to Ho Chi Minh City, nonstop, 12 to 15 day trips.", ""]
-    if deals:
-        out += [f"**Under A${CAP} (latest reading in the last 10 days):**", "",
-                "| Trip | Price | Airline | Checked | Link |", "|---|---|---|---|---|"]
-        for price, d, ret, airline, checked in deals:
-            out.append(f"| {pretty(d)} to {pretty(ret)} | A${price:.0f} | {airline} | {pretty(checked)} | [Search]({link(d, ret)}) |")
-    else:
-        out.append(f"**Nothing at or under A${CAP} right now.**")
-        if recent:
-            price, d, ret, airline, _ = recent[0]
-            out.append(f"Cheapest recent reading: A${price:.0f} with {airline}, {pretty(d)} to {pretty(ret)}.")
-    out += ["", "**Checked today:**", ""]
-    if todays:
-        out += ["| Trip | Price | Change | Airline |", "|---|---|---|---|"]
-        for price, d, ret, airline, change in todays:
-            out.append(f"| {pretty(d)} to {pretty(ret)} | A${price:.0f} | {change} | {airline} |")
-    else:
-        out.append("No nonstop fares found in today's batch (those dates may not be on sale yet).")
-    out += ["", "Prices are Australian dollars for 1 adult and may not include checked baggage. Confirm on the booking page before buying."]
+def table(rows):
+    out = ["| Trip | Est. price | Airline | Link |", "|---|---|---|---|"]
+    for t in rows:
+        out.append(f"| {pretty(t['depart'])} to {pretty(t['return'])} | A${t['price']} | {t['airline']} | [Check on Google]({link(t['depart'], t['return'])}) |")
+    return out
+
+
+def write_report(trips, new_deals, summary):
+    ordered = sorted(trips.values(), key=lambda t: t["price"])
+    deals = [t for t in ordered if t["price"] <= CAP]
+    out = [f"@{USER} Fare update: Sydney to Ho Chi Minh City, nonstop, 12 and 15 day trips.", ""]
+    if new_deals:
+        out += [f"**New: now estimated at or under A${CAP}**", ""] + table(sorted(new_deals, key=lambda t: t["price"])) + [""]
+    if summary or not new_deals:
+        if deals:
+            out += [f"**All trips estimated at or under A${CAP} right now ({len(deals)})**", ""] + table(deals[:15]) + [""]
+        else:
+            out.append(f"**Nothing estimated at or under A${CAP} right now.**")
+            if ordered:
+                t = ordered[0]
+                out.append(f"Cheapest: about A${t['price']} with {t['airline']}, {pretty(t['depart'])} to {pretty(t['return'])}.")
+            out.append("")
+        out.append(f"Tracking {len(trips)} trips.")
+        out.append("")
+    out.append("Prices are estimates of what Google shows in Australia (this tracker sees a US view, so they can be off by a few percent). Click the link and confirm before buying. Checked baggage may not be included.")
     open("report.md", "w").write("\n".join(out) + "\n")
 
 
 def main():
     os.makedirs("data", exist_ok=True)
-    new_file = not os.path.exists(OUT)
-    today = datetime.now(timezone.utc).date()
-    ok = empty = hard = 0
-    with open(OUT, "a", newline="") as fh:
+    if os.path.exists("report.md"):
+        os.remove("report.md")
+    now = datetime.now(timezone.utc)
+    prev = {}
+    if os.path.exists(LATEST):
+        try:
+            prev = json.load(open(LATEST))
+        except Exception:
+            prev = {}
+    prev_trips = prev.get("trips", {})
+    trips = dict(prev_trips)
+    new_hist = not os.path.exists(HIST)
+    new_deals, ok, none = [], 0, 0
+    with open(HIST, "a", newline="") as fh:
         w = csv.writer(fh)
-        if new_file:
+        if new_hist:
             w.writerow(FIELDS)
-        for d, ret, n in todays_batch(today):
-            best = None
-            try:
-                signal.alarm(60)   # hard stop if SerpApi hangs
-                best = cheapest(d, ret)
-                signal.alarm(0)
+        d = FIRST
+        while d <= LAST:
+            for n in TRIP_DAYS:
+                ret = d + timedelta(days=n)
+                key = f"{d}|{ret}"
+                try:
+                    signal.alarm(60)   # hard stop if a search hangs
+                    best = cheapest(d, ret)
+                    signal.alarm(0)
+                except Exception as e:
+                    signal.alarm(0)
+                    best = None
+                    print(f"{d} +{n}d failed: {e}", flush=True)
                 if best:
-                    w.writerow([today.isoformat(), d, ret, n, *best]); ok += 1
+                    price, airline = best
+                    old = prev_trips.get(key)
+                    trips[key] = {"depart": str(d), "return": str(ret), "days": n,
+                                  "price": price, "airline": airline, "seen": now.isoformat()}
+                    if not old or old["price"] != price:
+                        w.writerow([now.isoformat(), d, ret, n, price, airline, 0])
+                    if price <= CAP and (not old or old["price"] > CAP):
+                        new_deals.append(trips[key])
+                    ok += 1
                 else:
-                    empty += 1
-            except (HardError, urllib.error.HTTPError) as e:
-                hard += 1
-                print(f"{d} +{n}d error: {e}")
-            except Exception as e:
-                empty += 1
-                print(f"{d} +{n}d no result: {e}")
-            signal.alarm(0)
-            print(f"{d} to {ret}: {best}", flush=True)
-            fh.flush()
-            time.sleep(random.uniform(1, 3))
-    print(f"saved {ok}, no fares {empty}, errors {hard}")
-    if hard == PER_RUN:
-        raise SystemExit("Every search failed; check the SerpApi key and monthly allowance.")
-    write_report(today.isoformat())
+                    none += 1
+                fh.flush()
+                time.sleep(random.uniform(3, 6))
+            d += timedelta(days=STEP_DAYS)
+    print(f"saved {ok}, no nonstop/no result {none}")
+    if ok == 0:
+        raise SystemExit("No fares found; check the log above.")
+    # forget trips not seen for 3 days (for example, flights that stopped being sold)
+    cutoff = now - timedelta(days=3)
+    trips = {k: t for k, t in trips.items() if datetime.fromisoformat(t["seen"]) >= cutoff}
+    # one summary a day, around 7am Sydney (20:00 UTC)
+    summary_key = (now - timedelta(hours=20)).date().isoformat()
+    summary_due = prev.get("last_summary") != summary_key
+    manual = os.environ.get("EVENT") == "workflow_dispatch"
+    if new_deals or summary_due or manual:
+        write_report(trips, new_deals, summary_due or manual)
+    json.dump({"updated": now.isoformat(), "cap": CAP, "last_summary": summary_key if summary_due else prev.get("last_summary"),
+               "trips": trips}, open(LATEST, "w"))
 
 
 if __name__ == "__main__":
