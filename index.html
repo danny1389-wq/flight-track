@@ -4,7 +4,7 @@
 <title>Sydney to Ho Chi Minh City fares</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap">
 <style>
-  [hidden]{display:none!important}
+[hidden]{display:none!important}
 :root{--bg:#eef3f6;--ink:#14213d;--mute:#5b6b82;--card:#fff;--line:#d5dee6;--low:#0e7c7b;--warn:#c4553a;--sel:#14213d}
 @media(prefers-color-scheme:dark){:root{--bg:#0f1a2b;--ink:#e8eef5;--mute:#93a3b8;--card:#17263c;--line:#27384f;--low:#4fd1c5;--warn:#f08a6c;--sel:#e8eef5}}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,sans-serif;line-height:1.5}
@@ -30,10 +30,12 @@ h1{font-size:clamp(2rem,6vw,3.4rem);font-weight:800;letter-spacing:-.02em;margin
 <h1>Sydney to Ho Chi Minh City</h1>
 <p class="sub" id="meta">Loading fares…</p>
 <p class="tools"><a id="refresh" target="_blank" rel="noopener" href="https://github.com/danny1389-wq/flight-track/actions/workflows/track.yml">Refresh prices now</a> (opens GitHub: click Run workflow, then Run workflow again; takes about 7 minutes). Otherwise it updates itself every hour.</p>
+<p class="tools"><label><input type="checkbox" id="all"> Also show trips over the A$500 cap</label></p>
 <div id="app" class="grid" hidden>
   <div class="list" id="list" role="list"></div>
   <div class="panel"><h2 id="ttl"></h2><p id="note"></p><p><a id="book" target="_blank" rel="noopener">Check live on Google Flights</a></p><canvas id="chart" height="260"></canvas></div>
 </div>
+<div id="none" class="empty" hidden></div>
 <div id="empty" class="empty" hidden>No fares yet. In your GitHub repo, open Actions, choose Track fares, and select Run workflow. Refresh this page when it finishes.</div>
 <p class="foot">Nonstop flights only, 12 and 15 day trips. Prices are estimates of what Google Flights shows in Australia, so they can be off by a few percent. The Google link shows the live price.</p>
 </main>
@@ -66,10 +68,16 @@ async function load(){
   render();
 }
 function render(){
-  const trips=Object.entries(data.trips).map(([k,t])=>({k,...t})).sort((a,b)=>a.price-b.price);
-  if(!trips.length){$("empty").hidden=false;$("app").hidden=true;return}
-  $("empty").hidden=true;$("app").hidden=false;tick();
+  const every=Object.entries(data.trips).map(([k,t])=>({k,...t})).sort((a,b)=>a.price-b.price);
+  if(!every.length){$("empty").hidden=false;$("app").hidden=true;$("none").hidden=true;return}
   const cap=data.cap||500;
+  const trips=$("all").checked?every:every.filter(t=>t.price<=cap);
+  $("empty").hidden=true;tick();
+  if(!trips.length){
+    $("app").hidden=true;$("none").hidden=false;
+    $("none").textContent="Nothing at or under "+money(cap)+" right now. Cheapest at the moment: "+money(every[0].price)+" with "+every[0].airline+", "+fmtD(every[0].depart)+" to "+fmtD(every[0].return)+". Tick the box above to see all trips.";
+    return}
+  $("none").hidden=true;$("app").hidden=false;
   $("list").innerHTML="";
   trips.forEach(t=>{
     const b=document.createElement("button");b.className="row";b.dataset.k=t.k;b.setAttribute("aria-pressed",t.k===sel);
@@ -90,5 +98,6 @@ function show(t){
   chart&&chart.destroy();
   chart=new Chart($("chart"),{type:"line",data:{labels:pts.map(r=>fmtT(r.checked)),datasets:[{data:pts.map(r=>+r.price),borderColor:getComputedStyle(document.body).getPropertyValue("--sel"),stepped:true,pointRadius:3}]},options:{plugins:{legend:{display:false}},scales:{y:{title:{display:true,text:"Estimated fare (A$)"}},x:{title:{display:true,text:"When the price changed"}}}}});
 }
+$("all").onchange=()=>data&&render();
 load();setInterval(load,5*60*1000);setInterval(tick,30*1000);
 </script></body></html>
