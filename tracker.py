@@ -1,5 +1,5 @@
 """Rotating nonstop sweep SYD<->SGN (Australian market, AUD) via SerpApi. Flags fares at or under CAP and writes report.md."""
-import csv, json, os, random, time, urllib.error, urllib.parse, urllib.request
+import csv, json, os, random, signal, time, urllib.error, urllib.parse, urllib.request
 from collections import defaultdict
 from datetime import date, datetime, timedelta, timezone
 
@@ -16,6 +16,13 @@ USER = "danny1389-wq"   # GitHub username that gets the report email
 
 class HardError(Exception):
     pass
+
+
+def _too_slow(signum, frame):
+    raise TimeoutError("search took longer than 60 seconds")
+
+
+signal.signal(signal.SIGALRM, _too_slow)
 
 
 def all_combos():
@@ -126,8 +133,11 @@ def main():
         if new_file:
             w.writerow(FIELDS)
         for d, ret, n in todays_batch(today):
+            best = None
             try:
+                signal.alarm(60)   # hard stop if SerpApi hangs
                 best = cheapest(d, ret)
+                signal.alarm(0)
                 if best:
                     w.writerow([today.isoformat(), d, ret, n, *best]); ok += 1
                 else:
@@ -138,6 +148,8 @@ def main():
             except Exception as e:
                 empty += 1
                 print(f"{d} +{n}d no result: {e}")
+            signal.alarm(0)
+            print(f"{d} to {ret}: {best}", flush=True)
             fh.flush()
             time.sleep(random.uniform(1, 3))
     print(f"saved {ok}, no fares {empty}, errors {hard}")
