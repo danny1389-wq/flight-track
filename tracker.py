@@ -139,7 +139,7 @@ def main():
                 else:
                     none += 1
                 fh.flush()
-                                time.sleep(random.uniform(1, 2.5))
+                time.sleep(random.uniform(1, 2.5))
             d += timedelta(days=STEP_DAYS)
     print(f"saved {ok}, no nonstop/no result {none}")
     if ok == 0:
