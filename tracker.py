@@ -16,6 +16,7 @@ HIST = "data/prices.csv"
 LATEST = "data/latest.json"
 FIELDS = ["checked", "depart", "return", "days", "price", "airline", "stops"]
 USER = "danny1389-wq"
+DEBUG_LEFT = 3   # how many odd-looking readings to print in full (for troubleshooting)
 
 
 def _too_slow(signum, frame):
@@ -32,7 +33,9 @@ def cheapest(depart, ret):
         trip="round-trip", seat="economy", passengers=Passengers(adults=1))
     res = get_flights_from_filter(filt, currency="AUD", mode="fallback")
     best = None
+    seen = []
     for f in res.flights:
+        seen.append(f"{f.name} | stops={f.stops} | {f.price}")
         if f.stops != 0:
             continue   # nonstop only
         if not any(a in f.name.lower() for a in AIRLINES):
@@ -40,6 +43,12 @@ def cheapest(depart, ret):
         digits = re.sub(r"[^\d.]", "", f.price.replace(",", ""))
         if digits and (best is None or float(digits) < best[0]):
             best = (float(digits), f.name.replace(",", " "))
+    global DEBUG_LEFT
+    if best and best[0] * RATIO > 1500 and DEBUG_LEFT > 0:
+        DEBUG_LEFT -= 1
+        print(f"DEBUG odd price for {depart} to {ret}: everything Google returned:", flush=True)
+        for line in seen:
+            print("   ", line, flush=True)
     if best:
         return round(best[0] * RATIO), best[1]   # estimated Australian price
     return None
