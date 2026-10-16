@@ -8,6 +8,7 @@ from fast_flights import FlightData, Passengers, create_filter, get_flights_from
 ORIGIN, DEST = "SYD", "SGN"
 FIRST, LAST, STEP_DAYS = date(2027, 8, 1), date(2027, 11, 15), 4
 TRIP_DAYS = [12, 15]
+AIRLINES = ("vietjet", "jetstar")   # only these airlines are tracked
 CAP = 500        # A$ estimated Australian price at or under this counts as a deal
 RATIO = 0.837    # Google's A$ price for you divided by what this tracker sees (487 / 582)
 HIST = "data/prices.csv"
@@ -33,6 +34,8 @@ def cheapest(depart, ret):
     for f in res.flights:
         if f.stops != 0:
             continue   # nonstop only
+        if not any(a in f.name.lower() for a in AIRLINES):
+            continue   # budget airlines only
         digits = re.sub(r"[^\d.]", "", f.price.replace(",", ""))
         if digits and (best is None or float(digits) < best[0]):
             best = (float(digits), f.name.replace(",", " "))
@@ -90,7 +93,8 @@ def main():
             prev = json.load(open(LATEST))
         except Exception:
             prev = {}
-    prev_trips = prev.get("trips", {})
+    prev_trips = {k: t for k, t in prev.get("trips", {}).items()
+                  if any(a in t["airline"].lower() for a in AIRLINES)}
     trips = dict(prev_trips)
     new_hist = not os.path.exists(HIST)
     new_deals, ok, none = [], 0, 0
