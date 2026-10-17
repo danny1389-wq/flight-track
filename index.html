@@ -29,15 +29,15 @@ h1{font-size:clamp(2rem,6vw,3.4rem);font-weight:800;letter-spacing:-.02em;margin
 </style></head><body><main>
 <h1>Sydney to Ho Chi Minh City</h1>
 <p class="sub" id="meta">Loading fares…</p>
-<p class="tools"><a id="refresh" target="_blank" rel="noopener" href="https://github.com/danny1389-wq/flight-track/actions/workflows/track.yml">Refresh prices now</a> (opens GitHub: click Run workflow, then Run workflow again; takes about a minute and uses 7 of your 250 free monthly searches). Otherwise it updates itself once a day.</p>
+<p class="tools"><a id="refresh" target="_blank" rel="noopener" href="https://github.com/danny1389-wq/flight-track/actions/workflows/track.yml">Refresh prices now</a> (opens GitHub: click Run workflow, then Run workflow again; takes about 10 minutes). Otherwise it updates itself every hour.</p>
 <p class="tools"><label><input type="checkbox" id="all"> Also show trips over the A$500 cap</label></p>
 <div id="app" class="grid" hidden>
   <div class="list" id="list" role="list"></div>
   <div class="panel"><h2 id="ttl"></h2><p id="note"></p><p><a id="book" target="_blank" rel="noopener">Check live on Google Flights</a></p><canvas id="chart" height="260"></canvas></div>
 </div>
 <div id="none" class="empty" hidden></div>
-<div id="empty" class="empty" hidden>No fares yet. In your GitHub repo, open Actions, choose Track fares, and select Run workflow. Refresh this page when it finishes (about a minute).</div>
-<p class="foot">Nonstop Vietjet and Jetstar flights only, 12 and 15 day trips. Prices are Australian dollars from Google Flights. Each date pair is re-checked about once a month, so the age beside each trip shows how old its price is. The Google link shows the live price.</p>
+<div id="empty" class="empty" hidden>No fares yet. In your GitHub repo, open Actions, choose Track fares, and select Run workflow. Refresh this page when it finishes.</div>
+<p class="foot">Nonstop flights only, 12 and 15 day trips. Prices are estimates of what Google Flights shows in Australia. The Google link shows the live price.</p>
 </main>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
@@ -51,9 +51,9 @@ const ago=iso=>{const m=Math.max(0,Math.round((Date.now()-new Date(iso))/60000))
   if(h<48)return h+(h===1?" hour":" hours")+" ago";return Math.floor(h/24)+" days ago"};
 function tick(){
   if(!data)return;
-  const stale=(Date.now()-new Date(data.updated))>30*3600*1000;
+  const stale=(Date.now()-new Date(data.updated))>3*3600*1000;
   const el=$("meta");el.className="sub"+(stale?" stale":"");
-  el.textContent="Prices updated "+ago(data.updated)+(stale?" (older than expected, the daily run may have failed; check the Actions tab)":"");
+  el.textContent="Prices updated "+ago(data.updated)+(stale?" (older than expected, the hourly run may have failed; check the Actions tab)":"");
 }
 async function load(){
   try{
@@ -82,7 +82,7 @@ function render(){
   trips.forEach(t=>{
     const b=document.createElement("button");b.className="row";b.dataset.k=t.k;b.setAttribute("aria-pressed",t.k===sel);
     const deal=t.price<=cap;
-    b.innerHTML=`<span>${fmtD(t.depart)} to ${fmtD(t.return)} <small>${t.days} days</small></span><span class="p">${money(t.price)}</span><span class="s ${deal?"low":""}">${deal?"Under "+money(cap)+" · ":""}${t.airline} · checked ${ago(t.seen)}</span>`;
+    b.innerHTML=`<span>${fmtD(t.depart)} to ${fmtD(t.return)} <small>${t.days} days</small></span><span class="p">${money(t.price)}</span><span class="s ${deal?"low":""}">${deal?"Under "+money(cap)+" · ":""}${t.airline}</span>`;
     b.onclick=()=>{sel=t.k;show(t)};$("list").appendChild(b);
   });
   show(trips.find(t=>t.k===sel)||trips[0]);
