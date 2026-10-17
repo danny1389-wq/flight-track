@@ -1,7 +1,7 @@
 """Hourly free sweep SYD<->SGN via fast-flights. Nonstop only, 12 and 15 day trips.
-Saves the latest estimated Australian price per trip to data/latest.json (the dashboard reads this),
+Saves the latest Australian price per trip to data/latest.json (the dashboard reads this),
 logs price changes to data/prices.csv, and writes report.md only when there is something to email."""
-import csv, json, os, random, re, signal, time, urllib.parse
+import csv, json, os, random, re, threading, time, urllib.parse, urllib.request
 from datetime import date, datetime, timedelta, timezone
 from fast_flights import FlightData, Passengers, create_filter, get_flights_from_filter
 
@@ -11,7 +11,7 @@ TRIP_DAYS = [12, 15]
 AIRLINES = ("vietjet", "jetstar")   # only these airlines are tracked
 ALERT = 400      # A$ a trip newly at or under this triggers its own urgent email
 CAP = 500        # A$ estimated Australian price at or under this counts as a deal
-RATIO = 0.837    # Google's A$ price for you divided by what this tracker sees (487 / 582)
+RATIO = 1.0      # prices are read from an Australian connection, so no conversion is needed
 HIST = "data/prices.csv"
 LATEST = "data/latest.json"
 FIELDS = ["checked", "depart", "return", "days", "price", "airline", "stops"]
@@ -19,11 +19,42 @@ USER = "danny1389-wq"
 DEBUG_LEFT = 3   # how many odd-looking readings to print in full (for troubleshooting)
 
 
-def _too_slow(signum, frame):
-    raise TimeoutError("search took longer than 60 seconds")
+def run_with_timeout(fn, *args, seconds=60):
+    """Runs fn in a helper thread and gives up after `seconds` (works on Windows too)."""
+    box = {}
+
+    def work():
+        try:
+            box["value"] = fn(*args)
+        except Exception as e:
+            box["error"] = e
+
+    t = threading.Thread(target=work, daemon=True)
+    t.start()
+    t.join(seconds)
+    if t.is_alive():
+        raise TimeoutError(f"search took longer than {seconds} seconds")
+    if "error" in box:
+        raise box["error"]
+    return box.get("value")
 
 
-signal.signal(signal.SIGALRM, _too_slow)
+def post_issue(title, body):
+    """Creates a GitHub issue, which GitHub emails to you."""
+    token, repo = os.environ.get("GH_TOKEN"), os.environ.get("GITHUB_REPOSITORY")
+    if not token or not repo:
+        print("No GitHub token here, so no email was sent.", flush=True)
+        return
+    req = urllib.request.Request(
+        f"https://api.github.com/repos/{repo}/issues",
+        data=json.dumps({"title": title, "body": body}).encode("utf-8"),
+        headers={"Authorization": f"Bearer {token}", "Accept": "application/vnd.github+json",
+                 "Content-Type": "application/json", "User-Agent": "fare-tracker"})
+    try:
+        urllib.request.urlopen(req, timeout=30).read()
+        print(f"Email sent: {title}", flush=True)
+    except Exception as e:
+        print(f"Could not send email ({e})", flush=True)
 
 
 def cheapest(depart, ret):
@@ -88,27 +119,26 @@ def write_report(trips, new_deals, summary):
             out.append("")
         out.append(f"Tracking {len(trips)} trips.")
         out.append("")
-    out.append("Prices are estimates of what Google shows in Australia (this tracker sees a US view, so they can be off by a few percent). Click the link and confirm before buying. Checked baggage may not be included.")
-    open("report.md", "w").write("\n".join(out) + "\n")
+    out.append("Prices are what Google Flights showed from Australia when this was scanned. Click the link and confirm before buying. Checked baggage may not be included.")
+    stamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M")
+    post_issue(f"Fare update {stamp} UTC", "\n".join(out) + "\n")
 
 
 def write_alert(great):
     out = [f"@{USER} **A trip has dropped to A${ALERT} or under.** Sydney to Ho Chi Minh City, nonstop.", ""]
     out += table(sorted(great, key=lambda t: t["price"]))
-    out += ["", "Prices are estimates. Click the link and confirm on Google Flights before buying, and check what checked baggage costs."]
-    open("alert.md", "w").write("\n".join(out) + "\n")
+    out += ["", "Click the link and confirm on Google Flights before buying, and check what checked baggage costs."]
+    stamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M")
+    post_issue(f"ALERT - trip at or under A${ALERT} ({stamp} UTC)", "\n".join(out) + "\n")
 
 
 def main():
     os.makedirs("data", exist_ok=True)
-    for old_file in ("report.md", "alert.md"):
-        if os.path.exists(old_file):
-            os.remove(old_file)
     now = datetime.now(timezone.utc)
     prev = {}
     if os.path.exists(LATEST):
         try:
-            prev = json.load(open(LATEST))
+            prev = json.load(open(LATEST, encoding="utf-8"))
         except Exception:
             prev = {}
     prev_trips = {k: t for k, t in prev.get("trips", {}).items()
@@ -116,7 +146,7 @@ def main():
     trips = dict(prev_trips)
     new_hist = not os.path.exists(HIST)
     new_deals, great, ok, none = [], [], 0, 0
-    with open(HIST, "a", newline="") as fh:
+    with open(HIST, "a", newline="", encoding="utf-8") as fh:
         w = csv.writer(fh)
         if new_hist:
             w.writerow(FIELDS)
@@ -126,11 +156,8 @@ def main():
                 ret = d + timedelta(days=n)
                 key = f"{d}|{ret}"
                 try:
-                    signal.alarm(60)   # hard stop if a search hangs
-                    best = cheapest(d, ret)
-                    signal.alarm(0)
+                    best = run_with_timeout(cheapest, d, ret, seconds=60)   # give up if a search hangs
                 except Exception as e:
-                    signal.alarm(0)
                     best = None
                     print(f"{d} +{n}d failed: {e}", flush=True)
                 if best:
@@ -165,7 +192,7 @@ def main():
     if great:
         write_alert(great)
     json.dump({"updated": now.isoformat(), "cap": CAP, "last_summary": summary_key if summary_due else prev.get("last_summary"),
-               "trips": trips}, open(LATEST, "w"))
+               "trips": trips}, open(LATEST, "w", encoding="utf-8"))
 
 
 if __name__ == "__main__":
