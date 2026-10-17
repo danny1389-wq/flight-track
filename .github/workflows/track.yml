@@ -21,7 +21,8 @@ jobs:
       - run: pip install "fast-flights==2.2" "primp==0.15.0"
       - run: python tracker.py
         env:
-          EVENT: ${{ github.event_name }}
+          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
+          GH_TOKEN: ${{ github.token }}
       - name: Commit new data
         if: always()
         run: |
@@ -29,14 +30,3 @@ jobs:
           git config user.email "fare-tracker@users.noreply.github.com"
           git add data/prices.csv data/latest.json
           git diff --cached --quiet || (git commit -m "Update fares" && git pull --rebase -q && git push)
-      - name: Send report
-        if: hashFiles('report.md') != ''
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh issue create --title "Fare update $(date -u +%Y-%m-%d\ %H:%M) UTC" --body-file report.md
-      - name: Send urgent alert
-        if: hashFiles('alert.md') != ''
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh issue create --title "ALERT - trip at or under A\$400 ($(date -u +%Y-%m-%d\ %H:%M) UTC)" --body-file alert.md
