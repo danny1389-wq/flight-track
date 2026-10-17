@@ -1,7 +1,7 @@
 name: Track fares
 on:
   schedule:
-    - cron: "0 19 * * *"   # once a day, about 6am Sydney
+    - cron: "5 * * * *"   # every hour
   workflow_dispatch:
 permissions:
   contents: write
@@ -11,17 +11,17 @@ concurrency:
   cancel-in-progress: false
 jobs:
   track:
-    timeout-minutes: 15
+    timeout-minutes: 55
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - run: pip install "fast-flights==2.2" "primp==0.15.0"
       - run: python tracker.py
         env:
-          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
-          GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
       - name: Commit new data
         if: always()
         run: |
@@ -29,3 +29,14 @@ jobs:
           git config user.email "fare-tracker@users.noreply.github.com"
           git add data/prices.csv data/latest.json
           git diff --cached --quiet || (git commit -m "Update fares" && git pull --rebase -q && git push)
+      - name: Send report
+        if: hashFiles('report.md') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue create --title "Fare update $(date -u +%Y-%m-%d\ %H:%M) UTC" --body-file report.md
+      - name: Send urgent alert
+        if: hashFiles('alert.md') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue create --title "ALERT - trip at or under A\$400 ($(date -u +%Y-%m-%d\ %H:%M) UTC)" --body-file alert.md
