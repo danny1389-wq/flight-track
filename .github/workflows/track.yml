@@ -12,31 +12,27 @@ concurrency:
 jobs:
   track:
     timeout-minutes: 55
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - run: pip install "fast-flights==2.2" "primp==0.15.0"
-      - run: python tracker.py
+      - name: Install libraries
+        run: python -m pip install "fast-flights==2.2" "primp==0.15.0"
+      - name: Scan fares
+        run: python tracker.py
         env:
           EVENT: ${{ github.event_name }}
+          GH_TOKEN: ${{ github.token }}
+          PYTHONIOENCODING: utf-8
       - name: Commit new data
         if: always()
         run: |
           git config user.name "fare-tracker"
           git config user.email "fare-tracker@users.noreply.github.com"
           git add data/prices.csv data/latest.json
-          git diff --cached --quiet || (git commit -m "Update fares" && git pull --rebase -q && git push)
-      - name: Send report
-        if: hashFiles('report.md') != ''
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh issue create --title "Fare update $(date -u +%Y-%m-%d\ %H:%M) UTC" --body-file report.md
-      - name: Send urgent alert
-        if: hashFiles('alert.md') != ''
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh issue create --title "ALERT - trip at or under A\$400 ($(date -u +%Y-%m-%d\ %H:%M) UTC)" --body-file alert.md
+          git diff --cached --quiet
+          if ($LASTEXITCODE -ne 0) {
+            git commit -m "Update fares"
+            git pull --rebase -q
+            git push
+          }
+          exit 0
