@@ -1,20 +1,50 @@
 import asyncio
+import base64
 import urllib.parse
 
 import primp
-from fast_flights import FlightData, Passengers, create_filter, get_flights_from_filter
 from fast_flights.core import parse_response
 from playwright.async_api import async_playwright
 
 DEPART, RETURN = "2027-08-09", "2027-08-21"
-FILT = create_filter(
-    flight_data=[FlightData(date=DEPART, from_airport="SYD", to_airport="SGN"),
-                 FlightData(date=RETURN, from_airport="SGN", to_airport="SYD")],
-    trip="round-trip", seat="economy", passengers=Passengers(adults=1))
-TFS_URL = ("https://www.google.com/travel/flights?tfs=" + urllib.parse.quote(FILT.as_b64().decode())
-           + "&hl=en&tfu=EgQIABABIgA&curr=AUD")
-Q_URL = ("https://www.google.com/travel/flights?hl=en&curr=AUD&q="
-         + urllib.parse.quote(f"Flights from SYD to SGN on {DEPART} through {RETURN}"))
+TFU = "EgoIABAAGAAgAigB"   # copied from the address bar of a normal Chrome search
+
+
+def varint(n):
+    out = bytearray()
+    while True:
+        b = n & 0x7F
+        n >>= 7
+        out.append(b | (0x80 if n else 0))
+        if not n:
+            return bytes(out)
+
+
+def field(num, value):
+    if isinstance(value, int):
+        return varint(num << 3) + varint(value)
+    return varint((num << 3) | 2) + varint(len(value)) + value
+
+
+def airport(code):
+    return field(1, 1) + field(2, code.encode())
+
+
+def leg(date, a, b):
+    return field(3, field(2, date.encode()) + field(13, airport(a)) + field(14, airport(b)))
+
+
+def browser_style_tfs(depart, ret):
+    raw = (field(1, 28) + field(2, 2) + leg(depart, "SYD", "SGN") + leg(ret, "SGN", "SYD")
+           + field(8, 1) + field(9, 1) + field(14, 1)
+           + field(16, bytes.fromhex("08ffffffffffffffffff01")) + field(19, 1))
+    return base64.urlsafe_b64encode(raw).decode().rstrip("=")
+
+
+EXPECTED = ("CBwQAhoeEgoyMDI3LTA4LTA5agcIARIDU1lEcgcIARIDU0dOGh4SCjIwMjctMDgtMjFqBwgBEgNTR05yBwgBEgNTWURAAUgBcAGC"
+            "AQsI____________AZgBAQ")
+URL = ("https://www.google.com/travel/flights/search?tfs=" + browser_style_tfs(DEPART, RETURN)
+       + "&tfu=" + TFU + "&hl=en&curr=AUD")
 
 
 class Page:
@@ -39,15 +69,10 @@ def attempt(label, fn):
         print(f"\n===== {label} =====\nFAILED: {e!r}", flush=True)
 
 
-async def browser_fetch(url, australian):
+async def browser_fetch(url):
     async with async_playwright() as p:
         browser = await p.chromium.launch()
-        opts = {}
-        if australian:
-            opts = dict(locale="en-AU", timezone_id="Australia/Sydney",
-                        geolocation={"latitude": -33.87, "longitude": 151.21}, permissions=["geolocation"],
-                        extra_http_headers={"Accept-Language": "en-AU,en;q=0.9"})
-        ctx = await browser.new_context(**opts)
+        ctx = await browser.new_context(locale="en-AU", timezone_id="Australia/Sydney")
         page = await ctx.new_page()
         await page.goto(url)
         if page.url.startswith("https://consent.google.com"):
@@ -59,17 +84,14 @@ async def browser_fetch(url, australian):
     return body
 
 
-def plain_q():
-    res = primp.Client(impersonate="chrome_126", verify=False).get(Q_URL)
+def plain():
+    res = primp.Client(impersonate="chrome_126", verify=False).get(URL)
+    print("   status", res.status_code, flush=True)
     return parse_response(Page(res.text)).flights
 
 
-attempt("A: plain request, search-by-parameters (tracker today)",
-        lambda: get_flights_from_filter(FILT, currency="AUD", mode="common").flights)
-attempt("B: real browser, search-by-parameters",
-        lambda: get_flights_from_filter(FILT, currency="AUD", mode="local").flights)
-attempt("C: real browser set to Australia, search-by-parameters",
-        lambda: parse_response(Page(asyncio.run(browser_fetch(TFS_URL, True)))).flights)
-attempt("D: real browser set to Australia, same kind of link as the dashboard",
-        lambda: parse_response(Page(asyncio.run(browser_fetch(Q_URL, True)))).flights)
-attempt("E: plain request, same kind of link as the dashboard", plain_q)
+print("Rebuilt address matches the one from your Chrome:", browser_style_tfs(DEPART, RETURN) == EXPECTED, flush=True)
+print(URL, flush=True)
+attempt("F: plain request using the same address format as Chrome", plain)
+attempt("G: real browser using the same address format as Chrome",
+        lambda: parse_response(Page(asyncio.run(browser_fetch(URL)))).flights)
