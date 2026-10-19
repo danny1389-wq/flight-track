@@ -21,7 +21,7 @@ jobs:
       - run: pip install "fast-flights==2.2" "primp==0.15.0"
       - run: python tracker.py
         env:
-          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
+          EVENT: ${{ github.event_name }}
           GH_TOKEN: ${{ github.token }}
       - name: Commit new data
         if: always()
