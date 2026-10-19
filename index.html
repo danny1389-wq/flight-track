@@ -30,14 +30,14 @@ h1{font-size:clamp(2rem,6vw,3.4rem);font-weight:800;letter-spacing:-.02em;margin
 <h1>Sydney to Ho Chi Minh City</h1>
 <p class="sub" id="meta">Loading fares…</p>
 <p class="tools"><a target="_blank" rel="noopener" href="https://github.com/danny1389-wq/flight-track/actions/workflows/track.yml">Refresh now</a> (opens GitHub: click Run workflow, then Run workflow again; takes about 20 minutes). Otherwise it updates itself every hour.</p>
-<p class="tools"><label><input type="checkbox" id="all"> Show every date, including ones not confirmed or over A$500</label></p>
+<p class="tools"><label><input type="checkbox" id="all"> Also show trips over A$500</label></p>
 <div id="app" class="grid" hidden>
   <div class="list" id="list" role="list"></div>
   <div class="panel"><h2 id="ttl"></h2><p id="note"></p><p><a id="book" target="_blank" rel="noopener">Check live on Google Flights</a></p><canvas id="chart" height="260"></canvas></div>
 </div>
 <div id="none" class="empty" hidden></div>
 <div id="empty" class="empty" hidden>No fares yet. In your GitHub repo, open Actions, choose Track fares, and select Run workflow. Refresh this page when it finishes (about 20 minutes).</div>
-<p class="foot">Nonstop Vietjet and Jetstar flights only, 12 and 15 day trips. An hourly scan finds which dates have these flights on sale. Each day, 7 of them get their real Google Flights price confirmed (cheapest-looking first), so confirmed prices fill in over time. Prices are Australian dollars. The Google link shows the live price.</p>
+<p class="foot">Nonstop Vietjet and Jetstar flights only, 12 and 15 day trips. Each trip price is the cheapest outbound one-way fare plus the cheapest return one-way fare, which is how Google builds its lowest Vietjet prices. That means two separate tickets, booked separately, so check baggage and the details before buying. Prices are estimates in Australian dollars; the Google link shows the live price.</p>
 </main>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
@@ -51,10 +51,9 @@ const ago=iso=>{const m=Math.max(0,Math.round((Date.now()-new Date(iso))/60000))
   if(h<48)return h+(h===1?" hour":" hours")+" ago";return Math.floor(h/24)+" days ago"};
 function tick(){
   if(!data)return;
-  const all=Object.values(data.trips),conf=all.filter(t=>t.price!=null).length;
   const stale=(Date.now()-new Date(data.updated))>3*3600*1000;
   const el=$("meta");el.className="sub"+(stale?" stale":"");
-  el.textContent="Flights scanned "+ago(data.updated)+" · "+all.length+" dates have nonstop Vietjet or Jetstar flights · "+conf+" with a confirmed price"+(stale?" (older than expected, the hourly run may have failed; check the Actions tab)":"");
+  el.textContent="Prices updated "+ago(data.updated)+" · "+Object.keys(data.trips).length+" trips priced"+(stale?" (older than expected, the hourly run may have failed; check the Actions tab)":"");
 }
 async function load(){
   try{
@@ -70,27 +69,20 @@ async function load(){
 }
 function render(){
   const cap=data.cap||500;
-  const every=Object.entries(data.trips).map(([k,t])=>({k,...t}));
-  const conf=every.filter(t=>t.price!=null).sort((a,b)=>a.price-b.price);
-  const unconf=every.filter(t=>t.price==null).sort((a,b)=>(a.js??99999)-(b.js??99999));
+  const every=Object.entries(data.trips).map(([k,t])=>({k,...t})).sort((a,b)=>a.price-b.price);
   if(!every.length){$("empty").hidden=false;$("app").hidden=true;$("none").hidden=true;return}
-  const trips=$("all").checked?conf.concat(unconf):conf.filter(t=>t.price<=cap);
+  const trips=$("all").checked?every:every.filter(t=>t.price<=cap);
   $("empty").hidden=true;tick();
   if(!trips.length){
     $("app").hidden=true;$("none").hidden=false;
-    $("none").textContent=conf.length
-      ?"Nothing confirmed at or under "+money(cap)+" yet. Cheapest confirmed: "+money(conf[0].price)+" with "+conf[0].airline+", "+fmtD(conf[0].depart)+" to "+fmtD(conf[0].return)+". Tick the box above to see every date."
-      :"No prices confirmed yet. The first daily check will fill these in. Tick the box above to see which dates have flights on sale.";
+    $("none").textContent="Nothing at or under "+money(cap)+" right now. Cheapest at the moment: "+money(every[0].price)+" ("+every[0].airline+"), "+fmtD(every[0].depart)+" to "+fmtD(every[0].return)+". Tick the box above to see all trips.";
     return}
   $("none").hidden=true;$("app").hidden=false;
   $("list").innerHTML="";
   trips.forEach(t=>{
     const b=document.createElement("button");b.className="row";b.dataset.k=t.k;b.setAttribute("aria-pressed",t.k===sel);
-    const has=t.price!=null,deal=has&&t.price<=cap;
-    const top=has?money(t.price):"not checked";
-    const line=has?(deal?"Under "+money(cap)+" · ":"")+t.airline+" · checked "+ago(t.confirmed)
-      :(t.vj?"Vietjet flying":"")+(t.vj&&t.js!=null?" · ":"")+(t.js!=null?"Jetstar scan estimate about "+money(t.js):"")+" · real price not checked yet";
-    b.innerHTML=`<span>${fmtD(t.depart)} to ${fmtD(t.return)} <small>${t.days} days</small></span><span class="p">${top}</span><span class="s ${deal?"low":""}">${line}</span>`;
+    const deal=t.price<=cap;
+    b.innerHTML=`<span>${fmtD(t.depart)} to ${fmtD(t.return)} <small>${t.days} days</small></span><span class="p">${money(t.price)}</span><span class="s ${deal?"low":""}">${deal?"Under "+money(cap)+" · ":""}${t.airline} · out ${money(t.out)} + back ${money(t.back)}</span>`;
     b.onclick=()=>{sel=t.k;show(t)};$("list").appendChild(b);
   });
   show(trips.find(t=>t.k===sel)||trips[0]);
@@ -99,13 +91,9 @@ function show(t){
   sel=t.k;
   document.querySelectorAll(".row").forEach(b=>b.setAttribute("aria-pressed",b.dataset.k===t.k));
   const pts=histRows.filter(r=>r.depart===t.depart&&r.return===t.return);
+  const low=pts.length?Math.min(...pts.map(r=>+r.price)):t.price;
   $("ttl").textContent=`${fmtD(t.depart)} to ${fmtD(t.return)} (${t.days} days)`;
-  if(t.price!=null){
-    const low=pts.length?Math.min(...pts.map(r=>+r.price)):t.price;
-    $("note").textContent=`${money(t.price)} with ${t.airline}, checked on Google ${ago(t.confirmed)}. Lowest seen: ${money(Math.min(low,t.price))}.`;
-  }else{
-    $("note").textContent="Flights exist for these dates but the real price has not been checked yet. It will be checked in the coming days, or click the Google link to see it now.";
-  }
+  $("note").textContent=`${money(t.price)} total: ${t.out_airline} outbound ${money(t.out)} plus ${t.ret_airline} return ${money(t.back)}, two separate tickets. Seen ${ago(t.seen)}. Lowest seen: ${money(Math.min(low,t.price))}.`;
   $("book").href="https://www.google.com/travel/flights?hl=en&curr=AUD&q="+encodeURIComponent(`Flights from SYD to SGN on ${t.depart} through ${t.return}`);
   chart&&chart.destroy();chart=null;
   if(pts.length){
