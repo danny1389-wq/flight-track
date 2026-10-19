@@ -1,0 +1,268 @@
+=== one-way SYD -> SGN on 2027-08-16 (deep_search + show_hidden) ===
+status=Success time=2.36s
+best_flights  Scoot + Scoot                            stops=1 price=A$300
+best_flights  Vietnam Airlines                         stops=0 price=A$577
+best_flights  Cathay Pacific + Cathay Pacific          stops=1 price=A$599
+other_flights Scoot + Scoot                            stops=1 price=A$300
+other_flights Scoot + Scoot                            stops=1 price=A$300
+other_flights Scoot + Scoot                            stops=1 price=A$300
+other_flights Scoot + Scoot                            stops=1 price=A$300
+other_flights Scoot + Scoot                            stops=1 price=A$340
+other_flights Cathay Pacific + Cathay Pacific          stops=1 price=A$559
+other_flights Cathay Pacific + Cathay Pacific          stops=1 price=A$559
+other_flights Cathay Pacific + Cathay Pacific          stops=1 price=A$559
+other_flights Cathay Pacific + Cathay Pacific          stops=1 price=A$563
+other_flights Vietnam Airlines + Vietnam Airlines      stops=1 price=A$568
+other_flights Vietnam Airlines + Vietnam Airlines      stops=1 price=A$591
+other_flights Cebu Pacific + Cebu Pacific              stops=1 price=A$591
+other_flights Cathay Pacific + Cathay Pacific          stops=1 price=A$599
+other_flights Vietnam Airlines + Vietnam Airlines      stops=1 price=A$608
+other_flights Cathay Pacific + Cathay Pacific          stops=1 price=A$619
+other_flights Cathay Pacific + Cathay Pacific          stops=1 price=A$619
+other_flights Vietnam Airlines + Vietnam Airlines      stops=1 price=A$630
+other_flights Singapore Airlines + Scoot               stops=1 price=A$641
+other_flights Singapore Airlines + Scoot               stops=1 price=A$641
+other_flights Singapore Airlines + Scoot               stops=1 price=A$648
+other_flights Singapore Airlines + Scoot               stops=1 price=A$650
+other_flights Singapore Airlines + Scoot               stops=1 price=A$650
+other_flights Singapore Airlines + Scoot               stops=1 price=A$650
+other_flights Singapore Airlines + Scoot               stops=1 price=A$650
+other_flights Vietnam Airlines + Vietnam Airlines      stops=1 price=A$668
+other_flights Vietnam Airlines + Vietnam Airlines      stops=1 price=A$668
+other_flights Vietnam Airlines + Vietnam Airlines      stops=1 price=A$668
+other_flights Vietnam Airlines + Vietnam Airlines      stops=1 price=A$668
+other_flights Qantas + Cathay Pacific + Cathay Pacific stops=2 price=A$668
+other_flights Qantas + Cathay Pacific + Cathay Pacific stops=2 price=A$668
+other_flights Qantas + Cathay Pacific + Cathay Pacific stops=2 price=A$668
+other_flights Qantas + Cathay Pacific + Cathay Pacific stops=2 price=A$668
+other_flights Qantas + Cathay Pacific + Cathay Pacific stops=2 price=A$668
+other_flights Vietnam Airlines + Vietnam Airlines      stops=1 price=A$669
+other_flights Vietnam Airlines + Vietnam Airlines      stops=1 price=A$669
+other_flights Vietnam Airlines + Vietnam Airlines      stops=1 price=A$669
+other_flights Vietnam Airlines + Vietnam Airlines      stops=1 price=A$669
+other_flights Vietnam Airlines + Vietnam Airlines      stops=1 price=A$669
+other_flights Vietnam Airlines + Vietnam Airlines      stops=1 price=A$669
+other_flights Vietnam Airlines + Vietnam Airlines      stops=1 price=A$670
+other_flights Philippine Airlines + Philippine Airlines stops=1 price=A$672
+other_flights XiamenAir + XiamenAir                    stops=1 price=A$673
+other_flights Singapore Airlines + Singapore Airlines  stops=1 price=A$716
+other_flights Singapore Airlines + Singapore Airlines  stops=1 price=A$716
+other_flights Singapore Airlines + Singapore Airlines  stops=1 price=A$716
+other_flights Singapore Airlines + Singapore Airlines  stops=1 price=A$716
+other_flights China Airlines + China Airlines          stops=1 price=A$718
+other_flights Singapore Airlines + Singapore Airlines  stops=1 price=A$739
+other_flights Singapore Airlines + Singapore Airlines  stops=1 price=A$739
+other_flights Singapore Airlines + Singapore Airlines  stops=1 price=A$739
+other_flights Vietnam Airlines + Vietnam Airlines + Vietnam Airlines stops=2 price=A$783
+other_flights Vietnam Airlines + Vietnam Airlines + Vietnam Airlines stops=2 price=A$783
+other_flights Jetstar + Vietnam Airlines               stops=1 price=A$802
+other_flights Vietnam Airlines + Vietnam Airlines + Vietnam Airlines stops=2 price=A$858
+other_flights China Eastern + China Eastern            stops=1 price=A$861
+other_flights China Eastern + China Eastern            stops=1 price=A$863
+other_flights China Eastern + China Eastern + China Eastern stops=2 price=A$864
+other_flights China Eastern + China Eastern + China Eastern stops=2 price=A$864
+other_flights China Eastern + China Eastern + China Eastern stops=2 price=A$864
+other_flights China Eastern + China Eastern + China Eastern stops=2 price=A$864
+other_flights THAI + THAI                              stops=1 price=A$886
+other_flights China Airlines + China Airlines          stops=1 price=A$891
+other_flights Malaysia Airlines + Malaysia Airlines    stops=1 price=A$977
+other_flights Malaysia Airlines + Malaysia Airlines    stops=1 price=A$977
+other_flights Malaysia Airlines + Malaysia Airlines    stops=1 price=A$977
+other_flights Qantas + Vietnam Airlines                stops=1 price=A$981
+other_flights Qantas + Vietnam Airlines                stops=1 price=A$981
+other_flights Qantas + Vietnam Airlines                stops=1 price=A$981
+other_flights Malaysia Airlines + Malaysia Airlines    stops=1 price=A$1007
+other_flights Malaysia Airlines + Malaysia Airlines    stops=1 price=A$1007
+other_flights Virgin Australia + Vietnam Airlines      stops=1 price=A$1033
+other_flights Qantas + Vietnam Airlines                stops=1 price=A$1056
+other_flights Qantas + Vietnam Airlines                stops=1 price=A$1056
+other_flights China Southern + China Southern          stops=1 price=A$1062
+other_flights China Southern + China Southern          stops=1 price=A$1062
+other_flights China Southern + China Southern          stops=1 price=A$1062
+other_flights China Southern + China Southern          stops=1 price=A$1062
+other_flights China Southern + China Southern          stops=1 price=A$1062
+other_flights China Eastern + China Eastern + Vietnam Airlines stops=2 price=A$1092
+other_flights Qantas + Vietnam Airlines                stops=1 price=A$1131
+other_flights Qantas + Vietnam Airlines                stops=1 price=A$1131
+other_flights Qantas + Vietnam Airlines                stops=1 price=A$1151
+other_flights Qantas + Vietnam Airlines                stops=1 price=A$1151
+other_flights Qantas + Singapore Airlines              stops=1 price=A$1195
+other_flights China Eastern + China Eastern + China Eastern stops=2 price=A$1325
+other_flights China Eastern + China Eastern + Vietnam Airlines stops=2 price=A$1389
+other_flights Air China + Air China + Air China        stops=2 price=A$1456
+other_flights Air China + Air China + Air China        stops=2 price=A$1456
+other_flights China Southern + China Southern + Vietnam Airlines stops=2 price=A$1459
+other_flights China Southern + China Southern + Vietnam Airlines stops=2 price=A$1501
+other_flights Malaysia Airlines + Malaysia Airlines + Vietnam Airlines stops=2 price=A$1699
+other_flights Malaysia Airlines + Vietnam Airlines     stops=1 price=A$1706
+other_flights Malaysia Airlines + Malaysia Airlines + Vietnam Airlines stops=2 price=A$1782
+other_flights Hong Kong Airlines + Philippine Airlines + Vietnam Airlines stops=2 price=A$1821
+other_flights Hong Kong Airlines + EVA Air + Vietnam Airlines stops=2 price=A$1960
+other_flights Hong Kong Airlines + EVA Air + Vietnam Airlines stops=2 price=A$1960
+other_flights Philippine Airlines + Vietnam Airlines   stops=1 price=A$2026
+other_flights Vietjet                                  stops=0 price=A$2227
+other_flights Philippine Airlines + Philippine Airlines + Vietnam Airlines stops=2 price=A$2362
+other_flights China Southern + Vietnam Airlines        stops=1 price=A$2411
+other_flights China Southern + Vietnam Airlines        stops=1 price=A$2485
+other_flights China Southern + Vietnam Airlines        stops=1 price=A$2485
+other_flights THAI + Vietnam Airlines                  stops=1 price=A$2560
+other_flights THAI + Vietnam Airlines                  stops=1 price=A$2560
+other_flights Juneyao Airlines + China Eastern         stops=1 price=A$2691
+other_flights THAI + Vietnam Airlines + Vietnam Airlines stops=2 price=A$2696
+other_flights Juneyao Airlines + China Eastern + China Eastern stops=2 price=A$2705
+other_flights Malaysia Airlines + XiamenAir + XiamenAir stops=2 price=A$3565
+other_flights China Southern + China Southern + China Eastern stops=2 price=A$4222
+other_flights China Southern + Shenzhen + China Eastern stops=2 price=A$5790
+other_flights China Southern + Shenzhen + China Eastern stops=2 price=A$5790
+other_flights Cathay Pacific + Vietnam Airlines        stops=1 price=A$6142
+other_flights Cathay Pacific + Philippine Airlines + Vietnam Airlines stops=2 price=A$6365
+other_flights Cathay Pacific + Cathay Pacific + Vietnam Airlines stops=2 price=A$6396
+other_flights Cathay Pacific + Cathay Pacific + Vietnam Airlines stops=2 price=A$6396
+other_flights Cathay Pacific + Cathay Pacific + Vietnam Airlines stops=2 price=A$6491
+other_flights Cathay Pacific + Cathay Pacific + Vietnam Airlines stops=2 price=A$6494
+other_flights Cathay Pacific + Cathay Pacific + China Eastern stops=2 price=A$6607
+121 flights; cheapest-from per Google: 300
+=== one-way SGN -> SYD on 2027-08-31 (deep_search + show_hidden) ===
+status=Success time=2.19s
+best_flights  Vietjet                                  stops=0 price=A$251
+best_flights  Scoot + Scoot                            stops=1 price=A$296
+best_flights  Singapore Airlines + Singapore Airlines  stops=1 price=A$678
+other_flights Scoot + Scoot                            stops=1 price=A$296
+other_flights Scoot + Scoot                            stops=1 price=A$296
+other_flights Scoot + Scoot                            stops=1 price=A$338
+other_flights Scoot + Scoot                            stops=1 price=A$338
+other_flights Scoot + Scoot                            stops=1 price=A$338
+other_flights Cebu Pacific + Cebu Pacific              stops=1 price=A$510
+other_flights XiamenAir + XiamenAir                    stops=1 price=A$566
+other_flights XiamenAir + XiamenAir                    stops=1 price=A$568
+other_flights Philippine Airlines + Philippine Airlines stops=1 price=A$613
+other_flights Scoot + Singapore Airlines               stops=1 price=A$675
+other_flights Scoot + Singapore Airlines               stops=1 price=A$675
+other_flights Scoot + Singapore Airlines               stops=1 price=A$675
+other_flights Scoot + Singapore Airlines               stops=1 price=A$675
+other_flights Singapore Airlines + Singapore Airlines  stops=1 price=A$678
+other_flights Singapore Airlines + Singapore Airlines  stops=1 price=A$678
+other_flights Singapore Airlines + Singapore Airlines  stops=1 price=A$678
+other_flights Singapore Airlines + Singapore Airlines  stops=1 price=A$678
+other_flights Scoot + Singapore Airlines               stops=1 price=A$686
+other_flights Scoot + Singapore Airlines               stops=1 price=A$696
+other_flights Scoot + Singapore Airlines               stops=1 price=A$696
+other_flights Singapore Airlines + Singapore Airlines  stops=1 price=A$707
+other_flights Singapore Airlines + Singapore Airlines  stops=1 price=A$712
+other_flights Singapore Airlines + Singapore Airlines  stops=1 price=A$713
+other_flights Singapore Airlines + Singapore Airlines  stops=1 price=A$713
+other_flights Malaysia Airlines + Malaysia Airlines    stops=1 price=A$804
+other_flights Malaysia Airlines + Malaysia Airlines    stops=1 price=A$804
+other_flights Malaysia Airlines + Malaysia Airlines    stops=1 price=A$804
+other_flights Cathay Pacific + Cathay Pacific          stops=1 price=A$817
+other_flights Cathay Pacific + Cathay Pacific          stops=1 price=A$817
+other_flights Cathay Pacific + Cathay Pacific          stops=1 price=A$817
+other_flights Scoot + Singapore Airlines               stops=1 price=A$850
+other_flights Singapore Airlines + Singapore Airlines  stops=1 price=A$868
+other_flights Singapore Airlines + Singapore Airlines  stops=1 price=A$868
+other_flights Singapore Airlines + Singapore Airlines  stops=1 price=A$870
+other_flights Scoot + Singapore Airlines               stops=1 price=A$907
+other_flights Scoot + Singapore Airlines               stops=1 price=A$932
+other_flights China Airlines + China Airlines          stops=1 price=A$947
+other_flights Vietnam Airlines + Virgin Australia      stops=1 price=A$987
+other_flights Vietnam Airlines + Virgin Australia      stops=1 price=A$987
+other_flights Vietnam Airlines + Virgin Australia      stops=1 price=A$987
+other_flights Vietnam Airlines + Virgin Australia      stops=1 price=A$987
+other_flights Vietnam Airlines + Virgin Australia      stops=1 price=A$987
+other_flights Vietnam Airlines + Virgin Australia      stops=1 price=A$987
+other_flights Vietnam Airlines + Virgin Australia      stops=1 price=A$987
+other_flights Vietnam Airlines + Virgin Australia      stops=1 price=A$987
+other_flights Vietnam Airlines + Virgin Australia      stops=1 price=A$987
+other_flights Vietnam Airlines + Virgin Australia      stops=1 price=A$987
+other_flights Vietnam Airlines + Virgin Australia      stops=1 price=A$987
+other_flights Vietnam Airlines + Jetstar               stops=1 price=A$994
+other_flights Scoot + Singapore Airlines               stops=1 price=A$1000
+other_flights Scoot + Singapore Airlines               stops=1 price=A$1000
+other_flights China Eastern + China Eastern            stops=1 price=A$1026
+other_flights China Eastern + China Eastern            stops=1 price=A$1026
+other_flights Vietnam Airlines + Qantas                stops=1 price=A$1088
+other_flights Vietnam Airlines + Qantas                stops=1 price=A$1088
+other_flights Vietnam Airlines + Hong Kong Airlines    stops=1 price=A$1122
+other_flights Vietnam Airlines + China Southern + China Southern stops=2 price=A$1211
+other_flights Vietnam Airlines + Vietnam Airlines      stops=1 price=A$1253
+other_flights Vietnam Airlines + Vietnam Airlines      stops=1 price=A$1253
+other_flights Vietnam Airlines + Vietnam Airlines      stops=1 price=A$1254
+other_flights Vietnam Airlines + Vietnam Airlines      stops=1 price=A$1254
+other_flights Vietnam Airlines + Vietnam Airlines      stops=1 price=A$1254
+other_flights Vietnam Airlines + Vietnam Airlines      stops=1 price=A$1254
+other_flights Vietnam Airlines + Vietnam Airlines      stops=1 price=A$1254
+other_flights Vietnam Airlines + Vietnam Airlines      stops=1 price=A$1254
+other_flights Vietnam Airlines + Vietnam Airlines      stops=1 price=A$1256
+other_flights Vietnam Airlines + Vietnam Airlines      stops=1 price=A$1260
+other_flights Vietnam Airlines + Vietnam Airlines      stops=1 price=A$1260
+other_flights Vietnam Airlines + Vietnam Airlines      stops=1 price=A$1261
+other_flights Vietnam Airlines + Vietnam Airlines      stops=1 price=A$1261
+other_flights Vietnam Airlines + Qantas                stops=1 price=A$1289
+other_flights Vietnam Airlines + Qantas                stops=1 price=A$1289
+other_flights Vietnam Airlines + Qantas                stops=1 price=A$1290
+other_flights Vietnam Airlines + Qantas                stops=1 price=A$1290
+other_flights Vietnam Airlines + Qantas                stops=1 price=A$1298
+other_flights Singapore Airlines + Qantas              stops=1 price=A$1304
+other_flights Singapore Airlines + Qantas              stops=1 price=A$1304
+other_flights Vietnam Airlines                         stops=0 price=A$1306
+other_flights Vietnam Airlines + Qantas                stops=1 price=A$1308
+other_flights Vietnam Airlines + Qantas                stops=1 price=A$1308
+other_flights Vietnam Airlines + Vietnam Airlines      stops=1 price=A$1318
+other_flights Vietnam Airlines + Vietnam Airlines      stops=1 price=A$1318
+other_flights Singapore Airlines + Qantas              stops=1 price=A$1322
+other_flights Singapore Airlines + Qantas              stops=1 price=A$1322
+other_flights Vietnam Airlines + Qantas                stops=1 price=A$1345
+other_flights Vietnam Airlines + Malaysia Airlines     stops=1 price=A$1446
+other_flights Vietnam Airlines + Malaysia Airlines     stops=1 price=A$1941
+other_flights Vietnam Airlines + Malaysia Airlines     stops=1 price=A$1948
+other_flights Singapore Airlines + Air New Zealand + Air New Zealand stops=2 price=A$2398
+other_flights Singapore Airlines + Singapore Airlines + Air New Zealand stops=2 price=A$2398
+other_flights Singapore Airlines + Singapore Airlines + Air New Zealand stops=2 price=A$2398
+other_flights Singapore Airlines + Air New Zealand + Air New Zealand stops=2 price=A$2398
+other_flights Singapore Airlines + Air New Zealand + Air New Zealand stops=2 price=A$2398
+other_flights Vietnam Airlines + China Southern        stops=1 price=A$2705
+other_flights Vietnam Airlines + China Southern        stops=1 price=A$2707
+other_flights Vietnam Airlines + China Southern        stops=1 price=A$2710
+other_flights Vietnam Airlines + THAI                  stops=1 price=A$3830
+other_flights Vietnam Airlines + THAI                  stops=1 price=A$3830
+other_flights Vietnam Airlines + THAI                  stops=1 price=A$3830
+other_flights Vietnam Airlines + THAI                  stops=1 price=A$3872
+other_flights Vietnam Airlines + THAI                  stops=1 price=A$3872
+other_flights Vietnam Airlines + Cathay Pacific        stops=1 price=A$4017
+other_flights Vietnam Airlines + Cathay Pacific        stops=1 price=A$4024
+other_flights Sichuan Airlines + Sichuan Airlines      stops=1 price=A$5918
+other_flights China Eastern + China Eastern + China Eastern stops=2 price=A$6514
+other_flights China Eastern + China Eastern + China Eastern stops=2 price=A$6514
+other_flights China Eastern + China Eastern + China Eastern stops=2 price=A$6514
+other_flights China Eastern + China Eastern + China Eastern stops=2 price=A$6514
+other_flights China Eastern + China Eastern + China Eastern stops=2 price=A$6514
+112 flights; cheapest-from per Google: None
+=== round trip SYD -> SGN on 2027-08-16 returning 2027-08-31 (deep_search + show_hidden) ===
+status=Success time=3.85s
+best_flights  Scoot + Scoot                            stops=1 price=A$596
+best_flights  Singapore Airlines + Singapore Airlines  stops=1 price=A$903
+best_flights  Malaysia Airlines + Malaysia Airlines    stops=1 price=A$945
+other_flights Scoot + Scoot                            stops=1 price=A$596
+other_flights Scoot + Scoot                            stops=1 price=A$596
+other_flights Scoot + Scoot                            stops=1 price=A$596
+other_flights Scoot + Scoot                            stops=1 price=A$596
+other_flights Scoot + Scoot                            stops=1 price=A$690
+other_flights Malaysia Airlines + Malaysia Airlines    stops=1 price=A$945
+other_flights Malaysia Airlines + Malaysia Airlines    stops=1 price=A$945
+other_flights Singapore Airlines + Singapore Airlines  stops=1 price=A$956
+other_flights Malaysia Airlines + Malaysia Airlines    stops=1 price=A$980
+other_flights Malaysia Airlines + Malaysia Airlines    stops=1 price=A$980
+other_flights Singapore Airlines + Scoot               stops=1 price=A$996
+other_flights Singapore Airlines + Scoot               stops=1 price=A$996
+other_flights Singapore Airlines + Scoot               stops=1 price=A$1031
+other_flights Qantas + Malaysia Airlines + Malaysia Airlines stops=2 price=A$1085
+other_flights Qantas + Malaysia Airlines + Malaysia Airlines stops=2 price=A$1089
+other_flights Cathay Pacific + Cathay Pacific          stops=1 price=A$1102
+other_flights Cathay Pacific + Cathay Pacific          stops=1 price=A$1111
+other_flights Cebu Pacific + Cebu Pacific              stops=1 price=A$1134
+other_flights Singapore Airlines + Singapore Airlines  stops=1 price=A$1170
+other_flights Singapore Airlines + Singapore Airlines  stops=1 price=A$1170
+other_flights THAI + THAI                              stops=1 price=A$1408
+other_flights Vietnam Airlines                         stops=0 price=A$1600
+other_flights Vietjet                                  stops=0 price=A$4964
+26 flights; cheapest-from per Google: 596
