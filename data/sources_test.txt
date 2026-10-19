@@ -1,0 +1,67 @@
+Checked (UTC): 2026-10-19T08:41:59+00:00 | date tested: 2027-08-29
+
+===== edreams =====
+robots.txt: 25 rules for all robots; relevant: ['Disallow: /javascript/', 'Disallow: /styles/', 'Disallow: /travel/', 'Disallow: /*mktportal', 'Disallow: /*adlabel', 'Disallow: /*zanpid', 'Disallow: /engine/ItinerarySearch/search', 'Disallow: /engine/ItinerarySearch/resident']
+[SYD-SGN] status=200 blocked=False title='Cheap flights and last minute airfares - eDreams' text_len=3506 price_tokens=43
+   Vietjet mentioned: 1x | prices near Vietjet: [['$246', '$286', '$341', '$386']]
+   nonstop/direct words: 5 | baggage mentions: []
+   member/Prime/sign-in wording: ['log in', 'member', 'prime']
+   first text: What is Prime? Log in Recent searches EN (AU$) Where from? Where to? Departure Travellers Change search Feedback Set a price alert for this trip Set price alert
+[SGN-SYD] status=200 blocked=False title='Cheap flights and last minute airfares - eDreams' text_len=3481 price_tokens=44
+   Vietjet mentioned: 1x | prices near Vietjet: [['$140', '$17.99', '$2,383', '$216']]
+   nonstop/direct words: 3 | baggage mentions: []
+   member/Prime/sign-in wording: ['log in', 'member', 'prime']
+   first text: What is Prime? Log in Recent searches EN (AU$) Where from? Where to? Departure Travellers Change search Feedback Set a price alert for this trip Set price alert
+
+===== trip.com =====
+robots.txt: 132 rules for all robots; relevant: ['Allow: /airport-transfers/', 'Allow: /m/airport-transfers/', 'Disallow: /webapp/', 'Disallow: /*.woff$', 'Disallow: /*.ttf$', 'Disallow: /*.eot$', 'Disallow: /*.svg$', 'Disallow: /m/']
+[SYD-SGN] status=432 blocked=False title='' text_len=17 price_tokens=0
+   Vietjet mentioned: 0x | prices near Vietjet: n/a
+   nonstop/direct words: 0 | baggage mentions: []
+   member/Prime/sign-in wording: []
+   first text: whaleguard block 
+[SGN-SYD] status=432 blocked=False title='' text_len=17 price_tokens=0
+   Vietjet mentioned: 0x | prices near Vietjet: n/a
+   nonstop/direct words: 0 | baggage mentions: []
+   member/Prime/sign-in wording: []
+   first text: whaleguard block 
+
+===== kiwi.com =====
+robots.txt: 1373 rules for all robots; relevant: ['Allow: /*/help/search/', 'Allow: /api/help/sitemap*.xml', 'Disallow: */content/manage/*', 'Disallow: /aggregation_flights', 'Disallow: /airlines', 'Disallow: /flights', 'Disallow: /flights_multi', 'Disallow: /flights_no_cache']
+[SYD-SGN] status=403 blocked=True title='' text_len=0 price_tokens=0
+   Vietjet mentioned: 0x | prices near Vietjet: n/a
+   nonstop/direct words: 0 | baggage mentions: []
+   member/Prime/sign-in wording: []
+   first text: 
+[SGN-SYD] status=403 blocked=True title='' text_len=0 price_tokens=0
+   Vietjet mentioned: 0x | prices near Vietjet: n/a
+   nonstop/direct words: 0 | baggage mentions: []
+   member/Prime/sign-in wording: []
+   first text: 
+
+===== mytrip =====
+robots.txt: robots.txt not readable (HTTP Error 403: Forbidden)
+[home] status=200 blocked=False title='Mytrip | Explore the World, One Flight at a Time' text_len=2330 price_tokens=0
+   Vietjet mentioned: 0x | prices near Vietjet: n/a
+   nonstop/direct words: 2 | baggage mentions: []
+   member/Prime/sign-in wording: ['log in']
+   first text: Skip to main content Mytrip App Exclusive - Lowest Prices Guaranteed  Get the lowest prices worldwide only in the Mytrip app - Guaranteed, or we'll refund the d
+
+===== gotogate =====
+robots.txt: robots.txt not readable (<urlopen error [Errno -3] Temporary failure in name resoluti)
+[home] FAILED: Page.goto: net::ERR_NAME_NOT_RESOLVED at https://www.gotogate.com.au/
+Call log:
+  - navigating to "https://www.gotogate.com.au/", waiting until "domcontentloade
+
+===== skyscanner =====
+robots.txt: 0 rules for all robots; relevant: none that mention flights/search/results
+[SYD-SGN] status=200 blocked=False title='Skyscanner' text_len=312 price_tokens=0
+   Vietjet mentioned: 0x | prices near Vietjet: n/a
+   nonstop/direct words: 0 | baggage mentions: []
+   member/Prime/sign-in wording: []
+   first text: Are you a person or a robot? Please don’t take this personally - some scripts and bots are remarkably lifelike these days! Still having problems accessing the p
+[SGN-SYD] status=200 blocked=False title='Skyscanner' text_len=312 price_tokens=0
+   Vietjet mentioned: 0x | prices near Vietjet: n/a
+   nonstop/direct words: 0 | baggage mentions: []
+   member/Prime/sign-in wording: []
+   first text: Are you a person or a robot? Please don’t take this personally - some scripts and bots are remarkably lifelike these days! Still having problems accessing the p
