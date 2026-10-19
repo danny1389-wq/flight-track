@@ -1,6 +1,5 @@
-"""Fare tracker SYD<->SGN, nonstop Vietjet and Jetstar, 12 and 15 day trips.
-Google builds its cheapest Vietjet fares from two separate one-way tickets, so this scans every one-way flight
-(Sydney to Ho Chi Minh City, and back) and adds the outbound and return legs for every trip.
+"""Fare tracker SYD<->SGN, nonstop Jetstar only, 12 and 15 day trips.
+Scans every one-way Jetstar flight (Sydney to Ho Chi Minh City, and back) and adds the outbound and return legs for every trip.
 Saves data/latest.json (the dashboard reads it), data/prices.csv (price history) and emails you through GitHub issues."""
 import csv, json, os, random, re, threading, time, urllib.parse, urllib.request
 from datetime import date, datetime, timedelta, timezone
@@ -8,7 +7,7 @@ from datetime import date, datetime, timedelta, timezone
 ORIGIN, DEST = "SYD", "SGN"
 FIRST, LAST = date(2027, 8, 1), date(2027, 11, 15)
 TRIP_DAYS = [12, 15]
-AIRLINES = ("vietjet", "jetstar")
+AIRLINES = ("jetstar",)
 ALERT = 400      # A$ a trip newly at or under this triggers its own urgent email
 CAP = 500        # A$ at or under this counts as a deal
 RATIO = 1.0      # Australian price divided by the price this scanner sees (set after comparing with Google)
@@ -68,7 +67,7 @@ def leg_dates():
 
 
 def scan_leg(frm, to, day):
-    """Cheapest nonstop Vietjet/Jetstar one-way fare on this day as (raw price, airline), or None."""
+    """Cheapest nonstop Jetstar one-way fare on this day as (raw price, airline), or None."""
     from fast_flights import FlightData, Passengers, create_filter, get_flights_from_filter
     filt = create_filter(
         flight_data=[FlightData(date=day.isoformat(), from_airport=frm, to_airport=to)],
@@ -134,7 +133,7 @@ def main():
             prev = json.load(open(LATEST, encoding="utf-8"))
         except Exception:
             prev = {}
-    if prev.get("source") != "oneway":
+    if prev.get("source") != "jetstar":
         prev = {}
         with open(HIST, "w", newline="", encoding="utf-8") as fh:
             csv.writer(fh).writerow(FIELDS)
@@ -188,7 +187,7 @@ def main():
     ordered = sorted(trips.values(), key=lambda t: t["price"])
     deals = [t for t in ordered if t["price"] <= CAP]
     if new_deals or summary_due or manual:
-        out = [f"@{USER} Fare update: Sydney to Ho Chi Minh City, nonstop Vietjet and Jetstar, 12 and 15 day trips.", ""]
+        out = [f"@{USER} Fare update: Sydney to Ho Chi Minh City, nonstop Jetstar, 12 and 15 day trips.", ""]
         if new_deals:
             out += [f"**New: now at or under A${CAP}**", ""] + table(sorted(new_deals, key=lambda t: t["price"])) + [""]
         if summary_due or manual or not new_deals:
@@ -210,7 +209,7 @@ def main():
              + ["", "Two separate one-way tickets. Click the link and confirm on Google Flights before buying."])
         post_issue(f"ALERT - trip at or under A${ALERT} ({now.strftime('%Y-%m-%d %H:%M')} UTC)", "\n".join(a) + "\n")
 
-    json.dump({"source": "oneway", "updated": now.isoformat(), "cap": CAP, "ratio": RATIO,
+    json.dump({"source": "jetstar", "updated": now.isoformat(), "cap": CAP, "ratio": RATIO,
                "last_summary": summary_key if summary_due else prev.get("last_summary"),
                "legs": legs, "trips": trips}, open(LATEST, "w", encoding="utf-8"))
 
