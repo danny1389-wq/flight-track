@@ -1,0 +1,28 @@
+HOME status: 403 | title: 
+HOME text: This XML file does not appear to have any style information associated with it. The document tree is shown below.  <Error> <Code>AccessDenied</Code> <Message>Access Denied</Message> </Error>
+
+=== SYD->SGN 2027-08-16 (Chrome showed A$303) ===
+[0] status=403 url=https://www.vietjetair.com/en/booking/select-flight?tripType=oneway&departure=SYD&destination=SGN&departureDat
+    title= | prices on page: []
+    text: This XML file does not appear to have any style information associated with it. The document tree is shown below.  <Error> <Code>AccessDenied</Code> <Message>Access Denied</Message> </Error>
+    BLOCKED by bot check
+[1] status=403 url=https://www.vietjetair.com/en/booking?tripType=oneway&from=SYD&to=SGN&departureDate=2027-08-16&adult=1
+    title= | prices on page: []
+    text: This XML file does not appear to have any style information associated with it. The document tree is shown below.  <Error> <Code>AccessDenied</Code> <Message>Access Denied</Message> </Error>
+    BLOCKED by bot check
+[2] status=403 url=https://booking.vietjetair.com/Index.aspx?lang=en&st=sl&flo=0&cur=AUD&dep=SYD&des=SGN&dd=2027-08-16&ad=1
+    title=403 Forbidden | prices on page: []
+    text: 403 Forbidden
+
+=== SGN->SYD 2027-08-29 (Chrome showed A$251) ===
+[0] status=403 url=https://www.vietjetair.com/en/booking/select-flight?tripType=oneway&departure=SGN&destination=SYD&departureDat
+    title= | prices on page: []
+    text: This XML file does not appear to have any style information associated with it. The document tree is shown below.  <Error> <Code>AccessDenied</Code> <Message>Access Denied</Message> </Error>
+    BLOCKED by bot check
+[1] status=403 url=https://www.vietjetair.com/en/booking?tripType=oneway&from=SGN&to=SYD&departureDate=2027-08-29&adult=1
+    title= | prices on page: []
+    text: This XML file does not appear to have any style information associated with it. The document tree is shown below.  <Error> <Code>AccessDenied</Code> <Message>Access Denied</Message> </Error>
+    BLOCKED by bot check
+[2] status=403 url=https://booking.vietjetair.com/Index.aspx?lang=en&st=sl&flo=0&cur=AUD&dep=SGN&des=SYD&dd=2027-08-29&ad=1
+    title=403 Forbidden | prices on page: []
+    text: 403 Forbidden
