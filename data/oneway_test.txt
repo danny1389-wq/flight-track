@@ -1,0 +1,35 @@
+=== one-way SYD -> SGN on 2027-08-16 ===
+best_flights  Scoot + Scoot                            stops=1 price=A$300
+best_flights  Vietnam Airlines                         stops=0 price=A$577
+best_flights  Cebu Pacific + Cebu Pacific              stops=1 price=A$591
+best_flights  Cathay Pacific + Cathay Pacific          stops=1 price=A$599
+best_flights  THAI + THAI                              stops=1 price=A$886
+other_flights Cathay Pacific + Cathay Pacific          stops=1 price=A$559
+other_flights Vietnam Airlines + Vietnam Airlines      stops=1 price=A$627
+other_flights Vietnam Airlines + Vietnam Airlines      stops=1 price=A$669
+other_flights Singapore Airlines + Singapore Airlines  stops=1 price=A$716
+other_flights Vietjet                                  stops=0 price=A$2238
+cheapest-from per Google: 300
+=== one-way SGN -> SYD on 2027-08-31 ===
+best_flights  Scoot + Scoot                            stops=1 price=A$296
+best_flights  Singapore Airlines + Singapore Airlines  stops=1 price=A$678
+best_flights  Malaysia Airlines + Malaysia Airlines    stops=1 price=A$804
+other_flights Cebu Pacific + Cebu Pacific              stops=1 price=A$510
+other_flights Philippine Airlines + Philippine Airlines stops=1 price=A$613
+other_flights Scoot + Singapore Airlines               stops=1 price=A$675
+other_flights Singapore Airlines + Singapore Airlines  stops=1 price=A$678
+other_flights Cathay Pacific + Cathay Pacific          stops=1 price=A$817
+other_flights Vietnam Airlines                         stops=0 price=A$1306
+other_flights Vietjet                                  stops=0 price=A$2178
+cheapest-from per Google: 296
+=== one-way SYD -> SGN on 2027-08-02 ===
+best_flights  Scoot + Scoot                            stops=1 price=A$300
+best_flights  Vietnam Airlines                         stops=0 price=A$577
+best_flights  Cebu Pacific + Cebu Pacific              stops=1 price=A$591
+best_flights  Cathay Pacific + Cathay Pacific          stops=1 price=A$599
+best_flights  THAI + THAI                              stops=1 price=A$886
+other_flights Cathay Pacific + Cathay Pacific          stops=1 price=A$559
+other_flights Singapore Airlines + Scoot               stops=1 price=A$641
+other_flights Singapore Airlines + Singapore Airlines  stops=1 price=A$716
+other_flights Vietjet                                  stops=0 price=A$2277
+cheapest-from per Google: 300
