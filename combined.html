@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Combined Jetstar and Vietjet fares</title>
+<style>
+[hidden]{display:none!important}
+:root{--bg:#eef3f6;--ink:#14213d;--mute:#5b6b82;--card:#fff;--line:#d5dee6;--good:#0e7c7b;--warn:#b4452c;--chip:#e3ebf1}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1a2b;--ink:#e8eef5;--mute:#93a3b8;--card:#17263c;--line:#27384f;--good:#4fd1c5;--warn:#f08a6c;--chip:#223650}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.45}
+main{max-width:980px;margin:0 auto;padding:24px 16px 48px}
+h1{font-size:clamp(1.7rem,5vw,2.6rem);margin:0 0 4px;letter-spacing:-.02em}
+h2{font-size:1.15rem;margin:28px 0 10px}
+.sub{color:var(--mute);margin:0 0 4px;font-size:.92rem}.warn{color:var(--warn)}
+.note{border:1px dashed var(--line);border-radius:8px;padding:10px 12px;color:var(--mute);font-size:.88rem;margin:12px 0}
+.tools{display:flex;flex-wrap:wrap;gap:8px 18px;margin:14px 0;font-size:.92rem}
+.tools label{display:flex;align-items:center;gap:6px}select{font:inherit;padding:4px 6px;border-radius:6px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:0 0 10px}
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.price{font-size:1.5rem;font-weight:700;font-variant-numeric:tabular-nums}.price.deal{color:var(--good)}
+.dates{font-weight:600}.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.chip{background:var(--chip);border-radius:99px;padding:2px 10px;font-size:.78rem}.chip.bad{color:var(--warn);font-weight:600}.chip.ok{color:var(--good);font-weight:600}
+.leg{border-top:1px solid var(--line);padding:8px 0 0;margin-top:8px;font-size:.88rem}.leg b{font-variant-numeric:tabular-nums}
+.leg small{display:block;color:var(--mute)}a{color:var(--ink);font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:.9rem;background:var(--card);border:1px solid var(--line);border-radius:8px}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line)}th{color:var(--mute);font-weight:600}
+.empty{padding:20px;border:1px dashed var(--line);border-radius:8px;color:var(--mute)}
+</style></head><body><main>
+<h1>Combined Jetstar and Vietjet</h1>
+<p class="sub">Sydney to Ho Chi Minh City, nonstop, A$, return trips of 12 or 15 days. Two separate one-way tickets.</p>
+<p class="sub" id="meta">Loading...</p>
+<div class="note">Every price is unverified: not confirmed bookable and checked baggage not verified. Kiwi prices are all-in per adult. Jetstar prices are Google Flights readings. A date with no reading is <b>unknown</b>, not unavailable.</div>
+<div class="tools">
+  <label><input type="checkbox" id="all"> Also show trips over A$500</label>
+  <label><input type="checkbox" id="cur"> Current prices only</label>
+  <label>Airlines <select id="combo"><option value="">All combinations</option></select></label>
+</div>
+<div id="none" class="empty" hidden></div>
+<div id="list"></div>
+<h2>Cheapest by airline combination</h2>
+<table id="byCombo"><thead><tr><th>Outbound + return</th><th>Cheapest</th><th>Dates</th><th>Trips priced</th></tr></thead><tbody></tbody></table>
+<h2>Data coverage</h2>
+<table id="cov"><thead><tr><th>Source</th><th>Direction</th><th>Dates with a price</th><th>Range</th></tr></thead><tbody></tbody></table>
+<p class="sub" style="margin-top:8px">Dates outside these ranges have no reading yet. That does not mean no flight exists.</p>
+</main><script>
+var D=null;
+function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+function ago(iso){if(!iso)return"unknown";var h=(Date.now()-new Date(iso))/36e5;return h<1?Math.round(h*60)+" min ago":h<48?Math.round(h)+" h ago":Math.round(h/24)+" days ago"}
+function nice(d){return new Date(d+"T00:00:00").toLocaleDateString("en-AU",{weekday:"short",day:"numeric",month:"short",year:"numeric"})}
+function safe(u){return typeof u==="string"&&/^https:\/\//.test(u)?u:null}
+function leg(l,label){
+  var d=el("div","leg");var b=el("div");b.appendChild(el("b",null,label+": "+l.airline+(l.flight?" "+l.flight:"")+"  A$"+Math.round(l.price)));
+  d.appendChild(b);
+  d.appendChild(el("small",null,nice(l.date)+" ("+l.from+" to "+l.to+")"));
+  d.appendChild(el("small",null,"Source: "+l.source+" | seen "+ago(l.seen)+" ("+l.status+")"));
+  d.appendChild(el("small",null,l.price_note+" | "+l.baggage));
+  var u=safe(l.url);if(u){var a=el("a",null,l.source.indexOf("kiwi")===0?"Check on Kiwi":"Check on Google Flights");a.href=u;a.target="_blank";a.rel="noopener";d.appendChild(a)}
+  return d}
+function card(t){
+  var c=el("div","card"),top=el("div","top");
+  top.appendChild(el("span","dates",nice(t.depart)+" to "+nice(t.return)+" ("+t.days+" days)"));
+  top.appendChild(el("span","price"+(t.price<=D.cap?" deal":""),"A$"+t.price));c.appendChild(top);
+  var ch=el("div","chips");
+  ch.appendChild(el("span","chip",t.combo));
+  ch.appendChild(el("span","chip "+(t.status==="current"?"ok":"bad"),t.status==="current"?"Current prices":"Stale prices"));
+  ch.appendChild(el("span","chip bad","Unverified"));
+  if(t.price<=D.alert)ch.appendChild(el("span","chip ok","Urgent: at or under A$"+D.alert));
+  else if(t.price<=D.cap)ch.appendChild(el("span","chip ok","At or under A$"+D.cap));
+  c.appendChild(ch);c.appendChild(leg(t.out,"Outbound"));c.appendChild(leg(t.back,"Return"));return c}
+function render(){
+  var all=document.getElementById("all").checked,cur=document.getElementById("cur").checked,cb=document.getElementById("combo").value;
+  var rows=D.trips.filter(function(t){return(all||t.price<=D.cap)&&(!cur||t.status==="current")&&(!cb||t.combo===cb)});
+  var L=document.getElementById("list");L.textContent="";
+  var none=document.getElementById("none");
+  if(!rows.length){none.hidden=false;none.text
