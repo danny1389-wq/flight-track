@@ -30,9 +30,9 @@ except Exception as e:
     log("INIT ERROR: %r" % e)
 
 # (from, to, date, date_to or None)
-SEARCHES = [("SYD","SGN","16/08/2027",None), ("SGN","SYD","29/08/2027",None),
-            ("SGN","SYD","31/08/2027",None), ("SYD","SGN","29/08/2027",None),
-            ("SYD","SGN","01/08/2027","29/08/2027")]
+SEARCHES = [("SGN","SYD","13/08/2027","13/09/2027"),
+            ("SGN","SYD","13/08/2027","28/08/2027"),
+            ("SYD","SGN","30/08/2027","29/09/2027")]
 n = 2
 for a, b, d, d2 in SEARCHES:
     args = {"flyFrom": a, "flyTo": b, "departureDate": d, "adults": 1, "cabinClass": "M",
