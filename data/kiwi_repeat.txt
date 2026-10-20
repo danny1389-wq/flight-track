@@ -99,3 +99,62 @@ FULL cheapest: {"id": "21bc0372523f000032b8b99f_0", "price": 231.0, "priceFormat
   A$1697.0  VietJet Air  VJ86  stops=0  2027-09-03T10:15:00  checkedBag=0  https://kiwi.com/u/qt8urt
   A$1697.0  VietJet Air  VJ86  stops=0  2027-08-31T10:15:00  checkedBag=0  https://kiwi.com/u/fc47tgk
 FULL cheapest: {"id": "037221bc5247000034ea21e8_0", "price": 292.0, "priceFormatted": "292 AUD", "totalDurationSeconds": 31800, "bookingUrl": "https://kiwi.com/u/5cwnzv", "imageId": "ho-chi-minh-city_vn", "baggage": {"personalItem": 1, "cabinBag": 1, "checkedBag": 0}, "outbound": {"from": "SYD", "to": "SGN", "departureTime": "2027-09-02T10:15:00", "arrivalTime": "2027-09-02T16:05:00", "durationSeconds": 31800, "stops": 0, "route": ["SYD", "SGN"], "cabinClass": "Economy", "segments": [{"from": "SYD", "to": "SGN", "fromCity": "Sydney", "toCity": "Ho Chi Minh City", "fromName": "Sydney", "toName": "Tan Son Nhat International", "fromCountry": "Australia", "toCountry": "Vietnam", "departureTime": "2027-09-02T10:15:00", "arrivalTime": "2027-09-02T16:05:00", "durationSeconds": 31800, "carrier": "VJ", "carrierName": "VietJet Air", "flightNumber": "VJ86", "cabinClass": "Economy"}]}, "inbound": null}
+
+##### RUN 2026-10-20T10:32:06.941114Z (UTC) = 21:32 Sydney (AEDT)
+
+=== SGN->SYD 13/08/2027 to 13/09/2027 VJ nonstop
+15 itineraries
+  A$231.0  VietJet Air  VJ85  stops=0  2027-09-08T19:55:00  checkedBag=0  https://kiwi.com/u/734zs9k
+  A$231.0  VietJet Air  VJ85  stops=0  2027-08-16T19:55:00  checkedBag=0  https://kiwi.com/u/uc6gbs
+  A$231.0  VietJet Air  VJ85  stops=0  2027-08-25T19:55:00  checkedBag=0  https://kiwi.com/u/snhfjf4
+  A$2225.0  VietJet Air  VJ85  stops=0  2027-09-09T19:55:00  checkedBag=0  https://kiwi.com/u/w3qsy8
+  A$2225.0  VietJet Air  VJ85  stops=0  2027-09-11T19:55:00  checkedBag=0  https://kiwi.com/u/4dh98n5
+  A$2225.0  VietJet Air  VJ85  stops=0  2027-09-04T19:55:00  checkedBag=0  https://kiwi.com/u/rqydcs54
+  A$2225.0  VietJet Air  VJ85  stops=0  2027-09-10T19:55:00  checkedBag=0  https://kiwi.com/u/hx6tzrc
+  A$2225.0  VietJet Air  VJ85  stops=0  2027-09-05T19:55:00  checkedBag=0  https://kiwi.com/u/5nzkr6
+  A$2225.0  VietJet Air  VJ85  stops=0  2027-08-24T19:55:00  checkedBag=0  https://kiwi.com/u/h5hc3rd
+  A$2225.0  VietJet Air  VJ85  stops=0  2027-08-13T19:55:00  checkedBag=0  https://kiwi.com/u/t4zxqm
+  A$2225.0  VietJet Air  VJ85  stops=0  2027-08-28T19:55:00  checkedBag=0  https://kiwi.com/u/zpm3sq
+  A$2225.0  VietJet Air  VJ85  stops=0  2027-08-27T19:55:00  checkedBag=0  https://kiwi.com/u/fyujun
+  A$2225.0  VietJet Air  VJ85  stops=0  2027-08-22T19:55:00  checkedBag=0  https://kiwi.com/u/8bgmft
+  A$2225.0  VietJet Air  VJ85  stops=0  2027-08-21T19:55:00  checkedBag=0  https://kiwi.com/u/92by4d
+  A$2225.0  VietJet Air  VJ85  stops=0  2027-09-13T19:55:00  checkedBag=0  https://kiwi.com/u/byvt49
+FULL cheapest: {"id": "21bc0372524d0000108722b1_0", "price": 231.0, "priceFormatted": "231 AUD", "totalDurationSeconds": 30300, "bookingUrl": "https://kiwi.com/u/734zs9k", "imageId": "sydney_ns_au", "baggage": {"personalItem": 1, "cabinBag": 1, "checkedBag": 0}, "outbound": {"from": "SGN", "to": "SYD", "departureTime": "2027-09-08T19:55:00", "arrivalTime": "2027-09-09T07:20:00", "durationSeconds": 30300, "stops": 0, "route": ["SGN", "SYD"], "cabinClass": "Economy", "segments": [{"from": "SGN", "to": "SYD", "fromCity": "Ho Chi Minh City", "toCity": "Sydney", "fromName": "Tan Son Nhat International", "toName": "Sydney", "fromCountry": "Vietnam", "toCountry": "Australia", "departureTime": "2027-09-08T19:55:00", "arrivalTime": "2027-09-09T07:20:00", "durationSeconds": 30300, "carrier": "VJ", "carrierName": "VietJet Air", "flightNumber": "VJ85", "cabinClass": "Economy"}]}, "inbound": null}
+
+=== SGN->SYD 13/08/2027 to 28/08/2027 VJ nonstop
+15 itineraries
+  A$231.0  VietJet Air  VJ85  stops=0  2027-08-16T19:55:00  checkedBag=0  https://kiwi.com/u/zg8vsm
+  A$231.0  VietJet Air  VJ85  stops=0  2027-08-25T19:55:00  checkedBag=0  https://kiwi.com/u/6y65qu
+  A$2225.0  VietJet Air  VJ85  stops=0  2027-08-18T19:55:00  checkedBag=0  https://kiwi.com/u/nqcm9yh
+  A$2225.0  VietJet Air  VJ85  stops=0  2027-08-27T19:55:00  checkedBag=0  https://kiwi.com/u/8qjm76
+  A$2225.0  VietJet Air  VJ85  stops=0  2027-08-14T19:55:00  checkedBag=0  https://kiwi.com/u/763b7rb
+  A$2225.0  VietJet Air  VJ85  stops=0  2027-08-20T19:55:00  checkedBag=0  https://kiwi.com/u/fn5tb7b
+  A$2225.0  VietJet Air  VJ85  stops=0  2027-08-24T19:55:00  checkedBag=0  https://kiwi.com/u/7wmjyg
+  A$2225.0  VietJet Air  VJ85  stops=0  2027-08-22T19:55:00  checkedBag=0  https://kiwi.com/u/qqhuch
+  A$2225.0  VietJet Air  VJ85  stops=0  2027-08-28T19:55:00  checkedBag=0  https://kiwi.com/u/c66uuwz
+  A$2225.0  VietJet Air  VJ85  stops=0  2027-08-19T19:55:00  checkedBag=0  https://kiwi.com/u/8njj469
+  A$2225.0  VietJet Air  VJ85  stops=0  2027-08-26T19:55:00  checkedBag=0  https://kiwi.com/u/mhmqgt
+  A$2225.0  VietJet Air  VJ85  stops=0  2027-08-21T19:55:00  checkedBag=0  https://kiwi.com/u/zjzqm8k
+  A$2225.0  VietJet Air  VJ85  stops=0  2027-08-23T19:55:00  checkedBag=0  https://kiwi.com/u/7hkrtfh
+  A$2225.0  VietJet Air  VJ85  stops=0  2027-08-13T19:55:00  checkedBag=0  https://kiwi.com/u/m5kq8s
+  A$2225.0  VietJet Air  VJ85  stops=0  2027-08-15T19:55:00  checkedBag=0  https://kiwi.com/u/mdxnrb
+FULL cheapest: {"id": "21bc03725236000049e88a76_0", "price": 231.0, "priceFormatted": "231 AUD", "totalDurationSeconds": 30300, "bookingUrl": "https://kiwi.com/u/zg8vsm", "imageId": "sydney_ns_au", "baggage": {"personalItem": 1, "cabinBag": 1, "checkedBag": 0}, "outbound": {"from": "SGN", "to": "SYD", "departureTime": "2027-08-16T19:55:00", "arrivalTime": "2027-08-17T07:20:00", "durationSeconds": 30300, "stops": 0, "route": ["SGN", "SYD"], "cabinClass": "Economy", "segments": [{"from": "SGN", "to": "SYD", "fromCity": "Ho Chi Minh City", "toCity": "Sydney", "fromName": "Tan Son Nhat International", "toName": "Sydney", "fromCountry": "Vietnam", "toCountry": "Australia", "departureTime": "2027-08-16T19:55:00", "arrivalTime": "2027-08-17T07:20:00", "durationSeconds": 30300, "carrier": "VJ", "carrierName": "VietJet Air", "flightNumber": "VJ85", "cabinClass": "Economy"}]}, "inbound": null}
+
+=== SYD->SGN 30/08/2027 to 29/09/2027 VJ nonstop
+15 itineraries
+  A$292.0  VietJet Air  VJ86  stops=0  2027-09-02T10:15:00  checkedBag=0  https://kiwi.com/u/w69yds
+  A$1697.0  VietJet Air  VJ86  stops=0  2027-09-13T10:15:00  checkedBag=0  https://kiwi.com/u/kv3m8q
+  A$1697.0  VietJet Air  VJ86  stops=0  2027-09-10T10:15:00  checkedBag=0  https://kiwi.com/u/36mxbm
+  A$1697.0  VietJet Air  VJ86  stops=0  2027-09-14T10:15:00  checkedBag=0  https://kiwi.com/u/669zqz
+  A$1697.0  VietJet Air  VJ86  stops=0  2027-09-03T10:15:00  checkedBag=0  https://kiwi.com/u/m424bvf
+  A$1697.0  VietJet Air  VJ86  stops=0  2027-09-01T10:15:00  checkedBag=0  https://kiwi.com/u/3ub7c2z
+  A$1697.0  VietJet Air  VJ86  stops=0  2027-08-31T10:15:00  checkedBag=0  https://kiwi.com/u/6ptcpm
+  A$1697.0  VietJet Air  VJ86  stops=0  2027-09-09T10:15:00  checkedBag=0  https://kiwi.com/u/x47quts
+  A$1697.0  VietJet Air  VJ86  stops=0  2027-09-07T10:15:00  checkedBag=0  https://kiwi.com/u/c96mxbr
+  A$1697.0  VietJet Air  VJ86  stops=0  2027-09-11T10:15:00  checkedBag=0  https://kiwi.com/u/mncsfnz
+  A$1697.0  VietJet Air  VJ86  stops=0  2027-09-05T10:15:00  checkedBag=0  https://kiwi.com/u/kdsjpj7
+  A$1697.0  VietJet Air  VJ86  stops=0  2027-09-12T10:15:00  checkedBag=0  https://kiwi.com/u/c3xs25q
+  A$1697.0  VietJet Air  VJ86  stops=0  2027-09-04T10:15:00  checkedBag=0  https://kiwi.com/u/q897mh
+  A$1697.0  VietJet Air  VJ86  stops=0  2027-09-06T10:15:00  checkedBag=0  https://kiwi.com/u/7fpxyz
+  A$1697.0  VietJet Air  VJ86  stops=0  2027-08-30T10:15:00  checkedBag=0  https://kiwi.com/u/3tsqm3
+FULL cheapest: {"id": "037221bc5247000034ea21e8_0", "price": 292.0, "priceFormatted": "292 AUD", "totalDurationSeconds": 31800, "bookingUrl": "https://kiwi.com/u/w69yds", "imageId": "ho-chi-minh-city_vn", "baggage": {"personalItem": 1, "cabinBag": 1, "checkedBag": 0}, "outbound": {"from": "SYD", "to": "SGN", "departureTime": "2027-09-02T10:15:00", "arrivalTime": "2027-09-02T16:05:00", "durationSeconds": 31800, "stops": 0, "route": ["SYD", "SGN"], "cabinClass": "Economy", "segments": [{"from": "SYD", "to": "SGN", "fromCity": "Sydney", "toCity": "Ho Chi Minh City", "fromName": "Sydney", "toName": "Tan Son Nhat International", "fromCountry": "Australia", "toCountry": "Vietnam", "departureTime": "2027-09-02T10:15:00", "arrivalTime": "2027-09-02T16:05:00", "durationSeconds": 31800, "carrier": "VJ", "carrierName": "VietJet Air", "flightNumber": "VJ86", "cabinClass": "Economy"}]}, "inbound": null}
