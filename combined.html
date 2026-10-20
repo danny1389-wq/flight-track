@@ -72,3 +72,23 @@ function render(){
   var L=document.getElementById("list");L.textContent="";
   var none=document.getElementById("none");
   if(!rows.length){none.hidden=false;none.text
+  if(!rows.length){none.hidden=false;none.textContent=D.trips.length?"No trips match these filters. Cheapest overall: A$"+D.trips[0].price+" ("+D.trips[0].combo+", "+nice(D.trips[0].depart)+"). Tick 'Also show trips over A$"+D.cap+"' to see more.":"No combined trips yet: no outbound date has a matching return 12 or 15 days later with a price. This is not proof that no fares exist."}else none.hidden=true;
+  rows.slice(0,25).forEach(function(t){L.appendChild(card(t))});
+  if(rows.length>25)L.appendChild(el("p","sub","Showing the cheapest 25 of "+rows.length+"."))}
+function init(){
+  fetch("data/combined/trips.json?"+Date.now()).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){
+    D=j;var m=document.getElementById("meta"),i=j.inputs;
+    m.textContent="Merged "+ago(j.updated)+". Jetstar data: "+ago(i.jetstar_updated)+". Kiwi Vietjet data: "+ago(i.kiwi_updated)+" (Kiwi is searched by hand, so it can be old).";
+    var seen={},sel=document.getElementById("combo");
+    j.trips.forEach(function(t){if(!seen[t.combo]){seen[t.combo]=1}});
+    Object.keys(seen).sort().forEach(function(c){var o=el("option",null,c);o.value=c;sel.appendChild(o)});
+    var bc=document.querySelector("#byCombo tbody");
+    Object.keys(seen).sort().forEach(function(c){var ts=j.trips.filter(function(t){return t.combo===c}),b=ts[0],tr=el("tr");
+      [c,"A$"+b.price+" ("+b.status+")",nice(b.depart)+" to "+nice(b.return),String(ts.length)].forEach(function(x){tr.appendChild(el("td",null,x))});bc.appendChild(tr)});
+    var cv=document.querySelector("#cov tbody");
+    Object.keys(j.coverage).forEach(function(s){["out","back"].forEach(function(d){var x=j.coverage[s][d],tr=el("tr");
+      [s,d==="out"?"Outbound SYD to SGN":"Return SGN to SYD",String(x.dates_with_price),x.first?x.first+" to "+x.last:"none yet"].forEach(function(v){tr.appendChild(el("td",null,v))});cv.appendChild(tr)})});
+    ["all","cur","combo"].forEach(function(id){document.getElementById(id).addEventListener("change",render)});
+    render()}).catch(function(){var n=document.getElementById("none");n.hidden=false;n.textContent="No combined data yet. In the repo, open Actions, choose Combined fares merge, and select Run workflow.";document.getElementById("meta").textContent=""})}
+init();
+</script></body></html>
