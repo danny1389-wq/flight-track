@@ -158,3 +158,42 @@ FULL cheapest: {"id": "21bc03725236000049e88a76_0", "price": 231.0, "priceFormat
   A$1697.0  VietJet Air  VJ86  stops=0  2027-09-06T10:15:00  checkedBag=0  https://kiwi.com/u/7fpxyz
   A$1697.0  VietJet Air  VJ86  stops=0  2027-08-30T10:15:00  checkedBag=0  https://kiwi.com/u/3tsqm3
 FULL cheapest: {"id": "037221bc5247000034ea21e8_0", "price": 292.0, "priceFormatted": "292 AUD", "totalDurationSeconds": 31800, "bookingUrl": "https://kiwi.com/u/w69yds", "imageId": "ho-chi-minh-city_vn", "baggage": {"personalItem": 1, "cabinBag": 1, "checkedBag": 0}, "outbound": {"from": "SYD", "to": "SGN", "departureTime": "2027-09-02T10:15:00", "arrivalTime": "2027-09-02T16:05:00", "durationSeconds": 31800, "stops": 0, "route": ["SYD", "SGN"], "cabinClass": "Economy", "segments": [{"from": "SYD", "to": "SGN", "fromCity": "Sydney", "toCity": "Ho Chi Minh City", "fromName": "Sydney", "toName": "Tan Son Nhat International", "fromCountry": "Australia", "toCountry": "Vietnam", "departureTime": "2027-09-02T10:15:00", "arrivalTime": "2027-09-02T16:05:00", "durationSeconds": 31800, "carrier": "VJ", "carrierName": "VietJet Air", "flightNumber": "VJ86", "cabinClass": "Economy"}]}, "inbound": null}
+
+##### WSI TEST RUN 2026-10-20T10:35:11.022639Z (UTC) = 21:35 Sydney
+
+=== CONTROL: schedule start window: WSI->SGN 10/01/2027 to 31/01/2027 airline=VJ
+7 itineraries
+  A$383.0  VietJet Air  VJ88  stops=0 segments=1  dep Wed 2027-01-27T12:05:00  arr 2027-01-27T16:40:00  bag={"personalItem": 1, "cabinBag": 1, "checkedBag": 0}  https://kiwi.com/u/78nqfc
+  A$383.0  VietJet Air  VJ88  stops=0 segments=1  dep Sun 2027-01-31T12:05:00  arr 2027-01-31T16:40:00  bag={"personalItem": 1, "cabinBag": 1, "checkedBag": 0}  https://kiwi.com/u/s3tmgnf
+  A$383.0  VietJet Air  VJ88  stops=0 segments=1  dep Sun 2027-01-24T12:05:00  arr 2027-01-24T16:40:00  bag={"personalItem": 1, "cabinBag": 1, "checkedBag": 0}  https://kiwi.com/u/hfky44n
+  A$497.0  VietJet Air  VJ88  stops=0 segments=1  dep Wed 2027-01-20T12:05:00  arr 2027-01-20T16:40:00  bag={"personalItem": 1, "cabinBag": 1, "checkedBag": 0}  https://kiwi.com/u/9m3jjyd
+  A$567.0  VietJet Air  VJ88  stops=0 segments=1  dep Sun 2027-01-17T12:05:00  arr 2027-01-17T16:40:00  bag={"personalItem": 1, "cabinBag": 1, "checkedBag": 0}  https://kiwi.com/u/8kzpst
+  A$567.0  VietJet Air  VJ88  stops=0 segments=1  dep Wed 2027-01-13T12:05:00  arr 2027-01-13T16:40:00  bag={"personalItem": 1, "cabinBag": 1, "checkedBag": 0}  https://kiwi.com/u/39p6qf6
+  A$641.0  VietJet Air  VJ88  stops=0 segments=1  dep Sun 2027-01-10T12:05:00  arr 2027-01-10T16:40:00  bag={"personalItem": 1, "cabinBag": 1, "checkedBag": 0}  https://kiwi.com/u/byjqk6
+FULL cheapest: {"id": "55bf21bc516d0000316e2b1a_0", "price": 383.0, "priceFormatted": "383 AUD", "totalDurationSeconds": 30900, "bookingUrl": "https://kiwi.com/u/78nqfc", "imageId": "ho-chi-minh-city_vn", "baggage": {"personalItem": 1, "cabinBag": 1, "checkedBag": 0}, "outbound": {"from": "WSI", "to": "SGN", "departureTime": "2027-01-27T12:05:00", "arrivalTime": "2027-01-27T16:40:00", "durationSeconds": 30900, "stops": 0, "route": ["WSI", "SGN"], "cabinClass": "Economy", "segments": [{"from": "WSI", "to": "SGN", "fromCity": "Sydney", "toCity": "Ho Chi Minh City", "fromName": "Western Sydney International Airport", "toName": "Tan Son Nhat International", "fromCountry": "Australia", "toCountry": "Vietnam", "departureTime": "2027-01-27T12:05:00", "arrivalTime": "2027-01-27T16:40:00", "durationSeconds": 30900, "carrier": "VJ", "carrierName": "VietJet Air", "flightNumber": "VJ88", "cabinClass": "Economy"}]}, "inbound": null}
+
+=== RANGE out: WSI->SGN 01/08/2027 to 15/11/2027 airline=VJ
+0 itineraries  -> NO RESULTS
+
+=== RANGE back: SGN->WSI 01/08/2027 to 15/11/2027 airline=VJ
+0 itineraries  -> NO RESULTS
+
+=== Sunday out: WSI->SGN 15/08/2027 airline=VJ
+0 itineraries  -> NO RESULTS
+
+=== Wednesday out: WSI->SGN 18/08/2027 airline=VJ
+0 itineraries  -> NO RESULTS
+
+=== Sunday back: SGN->WSI 15/08/2027 airline=VJ
+0 itineraries  -> NO RESULTS
+
+=== Wednesday back: SGN->WSI 18/08/2027 airline=VJ
+0 itineraries  -> NO RESULTS
+
+=== ANY AIRLINE out (nonstop): WSI->SGN 01/08/2027 to 15/11/2027 (any airline)
+0 itineraries  -> NO RESULTS
+
+=== ANY AIRLINE back (nonstop): SGN->WSI 01/08/2027 to 15/11/2027 (any airline)
+0 itineraries  -> NO RESULTS
+
+SUMMARY: {"CONTROL: schedule start window": 7, "RANGE out": 0, "RANGE back": 0, "Sunday out": 0, "Wednesday out": 0, "Sunday back": 0, "Wednesday back": 0, "ANY AIRLINE out (nonstop)": 0, "ANY AIRLINE back (nonstop)": 0}
