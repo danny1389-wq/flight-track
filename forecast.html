@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flight sale forecast</title>
+<style>
+[hidden]{display:none!important}
+:root{--bg:#eef3f6;--ink:#14213d;--mute:#5b6b82;--card:#fff;--line:#d5dee6;--good:#0e7c7b;--warn:#b4452c;--chip:#e3ebf1;--vj:#c2410c;--js:#1d4ed8;--band:rgba(14,124,123,.14);--amber:#92600a}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1a2b;--ink:#e8eef5;--mute:#93a3b8;--card:#17263c;--line:#27384f;--good:#4fd1c5;--warn:#f08a6c;--chip:#223650;--vj:#fb923c;--js:#7aa7ff;--band:rgba(79,209,197,.16);--amber:#e8b04a}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.45}
+main{max-width:980px;margin:0 auto;padding:24px 16px 56px}
+h1{font-size:clamp(1.7rem,5vw,2.4rem);margin:0 0 4px;letter-spacing:-.02em}
+h2{font-size:1.2rem;margin:30px 0 4px}h3{font-size:1rem;margin:0}
+.sub{color:var(--mute);margin:0 0 6px;font-size:.92rem}
+.note{border:1px dashed var(--line);border-radius:8px;padding:10px 12px;color:var(--mute);font-size:.88rem;margin:12px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:0 0 10px}
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.when{font-size:1.2rem;font-weight:700}.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.chip{background:var(--chip);border-radius:99px;padding:2px 10px;font-size:.78rem;white-space:nowrap}
+.chip.rec{color:var(--good);font-weight:700}.chip.obs{color:var(--amber);font-weight:700}.chip.spec{color:var(--mute);font-weight:700}
+.chip.High{color:var(--good);font-weight:700}.chip.Medium{color:var(--amber);font-weight:700}.chip.Low,.chip.Unknown{color:var(--mute);font-weight:700}
+.chip.cov{color:var(--good);font-weight:600}.chip.nocov{color:var(--warn);font-weight:600}
+.vj{color:var(--vj);font-weight:700}.js{color:var(--js);font-weight:700}
+.row{font-size:.88rem;margin:5px 0}.row small,.mute{color:var(--mute)}
+a{color:var(--ink);font-weight:600}
+details{background:var(--card);border:1px solid var(--line);border-radius:10px;margin:0 0 8px}
+summary{cursor:pointer;padding:10px 14px;list-style:none}summary::-webkit-details-marker{display:none}
+summary::before{content:"\25B8";display:inline-block;width:1.1em;color:var(--mute)}details[open]>summary::before{content:"\25BE"}
+.body{padding:2px 14px 12px;font-size:.88rem}.body div{margin:3px 0}
+.track{position:relative;height:16px;margin:6px 0 2px;background:var(--chip);border-radius:4px;overflow:hidden}
+.track i{position:absolute;top:0;bottom:0;background:var(--band)}
+.track b{position:absolute;height:5px;border-radius:2px}.track .bk{top:2px;background:var(--ink)}.track .tv{top:9px;background:var(--mute);opacity:.55}.track .tv.u{opacity:.25}
+.axis{display:flex;justify-content:space-between;font-size:.7rem;color:var(--mute)}
+.tools{display:flex;flex-wrap:wrap;gap:8px 18px;margin:10px 0;font-size:.9rem}.tools label{display:flex;align-items:center;gap:6px}
+select{font:inherit;padding:4px 6px;border-radius:6px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+.chartbox{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px;margin:8px 0}
+canvas{max-width:100%}
+table{width:100%;border-collapse:collapse;font-size:.85rem;background:var(--card);border:1px solid var(--line)}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--mute);font-weight:600}
+.tw{overflow-x:auto}.empty{padding:16px;border:1px dashed var(--line);border-radius:8px;color:var(--mute)}
+</style></head><body><main>
+<p class="sub"><a href="combined.html">&larr; Combined fares</a></p>
+<h1>Flight sale forecast</h1>
+<p class="sub">Sydney&ndash;Ho Chi Minh City. Target departures <b>1 Aug&ndash;15 Nov 2027</b>. Budget A$500 for the two one-way tickets together.</p>
+<div class="note"><b>This is evidence, not prediction.</b> Everything here is a documented past promotion (advertised or listed fares, never verified as bookable) found by search, so some months are over-represented. A date is marked &ldquo;historically recurring&rdquo; only when it was seen in 2+ different years. &ldquo;Previously observed&rdquo; means seen once. No chance-of-a-sale numbers are given. These records are separate from the live prices on the main page. <span id="meta"></span></div>
+
+<h2>Western Sydney (WSI) status</h2>
+<p class="sub">Checked 20 Oct 2026 from published announcements. Kept separate from the SYD records and charts below.</p>
+<div class="card" id="wsi"></div>
+<h2>Sale watch calendar</h2>
+<p class="sub">Upcoming dates when a past promotion pattern could repeat, before your target departures. A sale only helps departures <i>after</i> it, and past sales opened travel some weeks later, so dates inside Aug&ndash;Nov 2027 are flagged.</p>
+<div id="cal"></div>
+<p class="sub" id="calnote"></p>
+
+<h2>Historical fares vs A$500</h2>
+<p class="sub">Advertised Sydney fares by when they were posted. Return fares compare directly with A$500. One-way fares are half a trip, so they compare with A$250. Click a point to open its source.</p>
+<div class="chartbox"><canvas id="fares" height="300"></canvas></div>
+<div class="tw"><table id="faretab"><thead><tr><th>Posted</th><th>Airline</th><th>Fare</th><th>Travel dates shown</th><th>Source</th></tr></thead><tbody></tbody></table></div>
+
+<h2>Timeline of documented sales</h2>
+<p class="sub">Dark bar = when you could book. Light bar = travel dates the sale covered. Shaded band = your Aug&ndash;Nov 2027 window. Tap a sale for details.</p>
+<div class="tools">
+  <label>Airline <select id="fa"><option value="">Both</option><option>Vietjet</option><option>Jetstar</option></select></label>
+  <label>Relevance <select id="fr"><option value="">All</option><option>High</option><option>Medium</option><option>Low</option><option>Unknown</option></select></label>
+  <label><input type="checkbox" id="fl"> Include deal-site fare listings</label>
+</div>
+<div class="axis"><span>2023</span><span>2024</span><span>2025</span><span>2026</span><span>2027</span></div>
+<div id="tl"></div>
+
+<details id="ana"><summary><h3 style="display:inline">Historical analysis</h3> <span class="mute">(sales found per calendar month)</span></summary>
+<div class="body">
+<div class="note">Counts show what was <b>found</b>, not how many sales happened. Press and deal sites cover some months better than others, and no result for a month means &ldquo;not found&rdquo;.</div>
+<div class="chartbox"><canvas id="months" height="240"></canvas></div>
+<h3 style="margin-top:14px">How relevance is rated</h3>
+<div class="row" id="rules"></div>
+</div></details>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+var H=null,TS=new Date("2027-08-01T00:00:00"),TE=new Date("2027-11-15T00:00:00"),MS=864e5;
+var MN=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+function dt(s){return s?new Date(s+"T00:00:00"):null}
+function nice(d){return (typeof d==="string"?dt(d):d).toLocaleDateString("en-AU",{day:"numeric",month:"short",year:"numeric"})}
+function mon(d){return d.toLocaleDateString("en-AU",{month:"short",year:"numeric"})}
+function safe(u){return typeof u==="string"&&/^https:\/\//.test(u)?u:null}
+function link(u,t){var s=safe(u);if(!s)return el("span","mute","no link");var a=el("a",null,t||"Source");a.href=s;a.target="_blank";a.rel="noopener";return a}
+function ac(a){return a==="Vietjet"?"vj":"js"}
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+function byId(id){return H.records.filter(function(r){return r.id===id})[0]}
+function cov(r){return{full:"Window covers Aug–Nov 2027",partial:"Window reaches part of Aug–Nov 2027",none:"Window ended before Aug 2027",unknown:"Travel window unknown"}[r.covers_aug_nov_2027]}
+
+/* ---- watch calendar ---- */
+var FIXED={"8/8 (Aug)":[8,8,"Vietjet"],"9/9 (Sep)":[9,9,"Vietjet"],"10/10 (Oct)":[10,10,"Vietjet"],"11/11 (Nov)":[11,11,"Vietjet"],"12/12 (Dec)":[12,12,"Vietjet"],"5/5 (May)":[5,5,"Vietjet"],"6/6 (Jun)":[6,6,"Vietjet"]};
+function approxDay(p){var r=byId(p.record_ids[p.record_ids.length-1]);var d=dt(r.booking_start||r.booking_end);return[d.getMonth()+1,d.getDate(),r.airline,true]}
+function calendar(){
+  var now=new Date();now.setHours(0,0,0,0);var out=[];
+  H.patterns.forEach(function(p){
+    var f=FIXED[p.pattern];if(!f){if(p.pattern.indexOf("Jetstar")===0)f=approxDay(p);else return}
+    for(var y=now.getFullYear();y<=2027;y++){
+      var d=new Date(y,f[0]-1,f[1]);if(d<now||d>=TE)continue;
+      out.push({date:d,p:p,airline:f[2],approx:!!f[3]})}});
+  out.sort(function(a,b){return a.date-b.date});
+  var box=document.getElementById("cal");box.textContent="";
+  out.forEach(function(e){box.appendChild(calCard(e,now))});
+  document.getElementById("calnote").textContent="Not on the calendar: Vietjet ran Wed–Fri / Friday promotions in 2023 and 2024, but none was found for 2025–26, so no dates are suggested. Sales that fit no pattern (for example the Dec 2025 and Oct 2026 sales) cannot be predicted from this data."}
+function calCard(e,now){
+  var p=e.p,recs=p.record_ids.map(byId),c=el("div","card"),top=el("div","top");
+  var w=el("span","when",e.date.toLocaleDateString("en-AU",{weekday:"short",day:"numeric",month:"short",year:"numeric"})+(e.approx?" (approx.)":""));top.appendChild(w);
+  top.appendChild(el("span",ac(e.airline),e.airline));c.appendChild(top);
+  var ch=el("div","chips"),rec=p.label==="historically recurring";
+  ch.appendChild(el("span","chip "+(rec?"rec":"obs"),rec?"Historically recurring ("+p.years_observed.join(", ")+")":"Previously observed ("+p.years_observed.join(", ")+" only)"));
+  var days=Math.round((e.date-now)/MS);ch.appendChild(el("span","chip",days<=0?"Today":"In "+days+" days"));
+  var before=e.date<TS;
+  ch.appendChild(el("span","chip "+(before?"cov":"nocov"),before?"Before all target departures":"Inside target window: only helps later departures"));
+  c.appendChild(ch);
+  var leads=recs.map(function(r){return r.lead_months_booking_end_to_last_travel_date}).filter(function(x){return x!=null});
+  var gaps=recs.filter(function(r){return r.travel_start&&r.booking_end}).map(function(r){return Math.round((dt(r.travel_start)-dt(r.booking_end))/MS)});
+  var line=el("div","row");
+  if(!before){
+    line.appendChild(el("b",null,"Too late for any departure before "+nice(e.date)+". "));
+    line.appendChild(document.createTextNode("Only relevant to the later part of your window, and past sales opened travel "+(gaps.length&&Math.min.apply(0,gaps)>0?Math.min.apply(0,gaps)+"+ days after the sale ended.":"at or shortly after the sale.")))}
+  else if(leads.length){var lo=Math.min.apply(0,leads),hi=Math.max.apply(0,leads);
+    var reach=new Date(e.date.getTime()+hi*30.44*MS),reachLo=new Date(e.date.getTime()+lo*30.44*MS);
+    line.appendChild(el("b",null,"Same lead time as past instances would reach Aug\u2013Nov 2027: "+(reach>=TS?"yes. ":"no. ")));
+    line.appendChild(document.createTextNode("Past sales let you book travel "+(lo===hi?lo:lo+"\u2013"+hi)+" months after the sale ended, so a repeat would cover travel to about "+mon(reachLo)+(lo===hi?"":" to "+mon(reach))+". An illustration from past dates, not a forecast."));
+    if(gaps.length){var g=Math.min.apply(0,gaps);line.appendChild(document.createTextNode(" Travel opened "+(g>0?g+"+ days after the sale ended.":"at or just after the sale.")))}}
+  else line.appendChild(document.createTextNode("Travel window of past instances unknown, so reach into 2027 cannot be assessed."));
+  c.appendChild(line);
+  var ev=el("div","row");ev.appendChild(el("b",null,"Evidence: "));
+  recs.forEach(function(r,i){if(i)ev.appendChild(document.createTextNode("; "));
+    ev.appendChild(link(r.source_url,r.event));
+    var t=el("span","chip "+r.relevance," "+r.relevance+" relevance");t.style.marginLeft="6px";ev.appendChild(t);
+    ev.appendChild(el("small",null," booked "+(r.booking_end?nice(r.booking_end):"?")+", travel to "+(r.travel_end?nice(r.travel_end):"unknown")+" ["+cov(r)+"]"))});
+  c.appendChild(ev);
+  if(p.note)c.appendChild(el("div","row mute",p.note));
+  return c}
+
+/* ---- fares chart ---- */
+var X0=new Date("2023-01-01T00:00:00");function xd(s){return Math.round((dt(s)-X0)/MS)}
+var chF=null;
+function fares(){
+  var P=[];
+  H.records.forEach(function(r){var f=r.advertised_fare;if(!f||!f.amount||f.amount<=0||f.qualifier==="under"||f.conflicting_values)return;
+    if(r.id.indexOf("wsi")>-1)return;
+    var ret=/^return/.test(f.basis),one=/^one-way/.test(f.basis);if(!ret&&!one)return;
+    var syd=/Sydney/.test(f.scope);
+    P.push({r:r,x:xd(r.published||r.booking_end),y:f.amount,kind:ret?"ret":syd?"one":"net",y2:f.amount,src:r.source_url})});
+  var tb=document.querySelector("#faretab tbody");tb.textContent="";
+  P.slice().sort(function(a,b){return a.x-b.x}).forEach(function(q){var r=q.r,tr=el("tr"),f=r.advertised_fare;
+    [nice(r.published||r.booking_end),r.airline,"A$"+f.amount+" "+(q.kind==="ret"?"return":"one-way")+(q.kind==="net"?" (Australia-wide 'from')":""),r.travel_start&&r.travel_end?nice(r.travel_start)+" to "+nice(r.travel_end):r.travel_end?"to "+nice(r.travel_end):"unknown"].forEach(function(v){tr.appendChild(el("td",null,v))});
+    var td=el("td");td.appendChild(link(r.source_url,"Open"));tr.appendChild(td);tb.appendChild(tr)});
+  var set=function(k,l,col,st){return{label:l,data:P.filter(function(q){return q.kind===k}),backgroundColor:col,borderColor:col,pointStyle:st,pointRadius:function(c){return c.raw.r.covers_aug_nov_2027==="partial"?10:6}}};
+  var col=css("--ink");Chart.defaults.color=css("--mute");
+  chF&&chF.destroy();
+  chF=new Chart(document.getElementById("fares"),{type:"scatter",data:{datasets:[
+    set("ret","Return (vs A$500)",css("--js"),"circle"),set("one","One-way, Sydney named (vs A$250)",css("--vj"),"triangle"),set("net","One-way, Australia-wide 'from' fare (vs A$250)",css("--mute"),"rect"),
+    {type:"line",label:"A$500 return target",data:[{x:0,y:500},{x:1500,y:500}],borderColor:css("--good"),borderDash:[6,4],pointRadius:0,borderWidth:2},
+    {type:"line",label:"A$250 one-way",data:[{x:0,y:250},{x:1500,y:250}],borderColor:css("--good"),borderDash:[2,4],pointRadius:0,borderWidth:1.5}]},
+   options:{parsing:false,responsive:true,onClick:function(e,els){if(els.length){var d=chF.data.datasets[els[0].datasetIndex].data[els[0].index];var u=safe(d&&d.src);if(u)window.open(u,"_blank","noopener")}},
+    plugins:{legend:{labels:{boxWidth:12}},tooltip:{callbacks:{label:function(c){var r=c.raw.r;if(!r)return c.dataset.label;return r.airline+" A$"+c.raw.y+" posted "+nice(r.published||r.booking_end)+(r.travel_end?", travel to "+nice(r.travel_end):"")+" ("+r.evidence_quality+", advertised)"}}}},
+    scales:{x:{type:"linear",min:0,max:1500,title:{display:true,text:"Date posted"},ticks:{stepSize:365,callback:function(v){var d=new Date(X0.getTime()+v*MS);return MN[d.getMonth()]+" "+d.getFullYear()}}},y:{min:0,title:{display:true,text:"Advertised fare (A$)"}}}}});
+  document.getElementById("fares").parentNode.appendChild(el("div","row mute","Larger markers: the fare's listed travel dates reach into Aug–Nov 2027."))}
+
+/* ---- timeline ---- */
+var T0=new Date("2023-01-01T00:00:00"),T1=new Date("2028-01-01T00:00:00");
+function pct(d){return Math.max(0,Math.min(100,(d-T0)/(T1-T0)*100))}
+function timeline(){
+  var a=document.getElementById("fa").value,rl=document.getElementById("fr").value,li=document.getElementById("fl").checked;
+  var rows=H.records.filter(function(r){return(li||r.record_type==="sale")&&(!a||r.airline===a)&&(!rl||r.relevance===rl)});
+  rows.sort(function(x,y){return(dt(y.booking_end||y.published))-(dt(x.booking_end||x.published))});
+  var box=document.getElementById("tl");box.textContent="";
+  if(!rows.length){box.appendChild(el("div","empty","No records match."));return}
+  rows.forEach(function(r){
+    var d=document.createElement("details"),s=document.createElement("summary");
+    var t=el("div","top");var l=el("span");l.appendChild(el("span",ac(r.airline),r.airline+" "));l.appendChild(document.createTextNode(r.event));t.appendChild(l);
+    t.appendChild(el("span","chip "+r.relevance,r.relevance+" relevance"));s.appendChild(t);
+    var tr=el("div","track"),band=el("i");band.style.left=pct(TS)+"%";band.style.width=(pct(TE)-pct(TS))+"%";tr.appendChild(band);
+    var be=dt(r.booking_end)||dt(r.published),bs=dt(r.booking_start)||be;
+    if(be){var b=el("b","bk");b.style.left=pct(bs)+"%";b.style.width=Math.max(.6,pct(be)-pct(bs))+"%";tr.appendChild(b);
+      if(r.travel_end){var ts=dt(r.travel_start)||be,v=el("b","tv"+(r.travel_start?"":" u"));v.style.left=pct(ts)+"%";v.style.width=Math.max(.6,pct(dt(r.travel_end))-pct(ts))+"%";tr.appendChild(v)}}
+    s.appendChild(tr);d.appendChild(s);
+    var b=el("div","body");
+    function row(k,v){var x=el("div");x.appendChild(el("b",null,k+": "));x.appendChild(document.createTextNode(v));b.appendChild(x)}
+    row("Type",r.record_type==="sale"?"Airline sale ("+r.evidence_quality+")":"Deal-site fare listing (not an airline announcement)");
+    row("Booking window",(r.booking_start?nice(r.booking_start):"start not stated")+" to "+(r.booking_end?nice(r.booking_end):"end not stated"));
+    row("Eligible travel",(r.travel_start?nice(r.travel_start):"start not stated")+" to "+(r.travel_end?nice(r.travel_end):"not stated")+" ("+r.travel_window_note+")");
+    row("Lead time",r.lead_months_booking_end_to_last_travel_date!=null?r.lead_months_booking_end_to_last_travel_date+" months from "+r.lead_basis+" to last travel date"+(r.lead_months_at_booking_start!=null?" (up to "+r.lead_months_at_booking_start+" months for the earliest bookings)":""):"unknown");
+    row("Reaches Aug–Nov 2027?",cov(r));
+    var f=r.advertised_fare;row("Advertised fare",(f.amount!=null?(f.qualifier||"")+" A$"+f.amount+" ":"no amount: ")+f.basis+" ("+f.scope+")"+(f.conflicting_values?" [source conflict: "+f.conflicting_values.join(" vs ")+"]":""));
+    row("Promo code",r.promo_code||"none stated");row("Baggage",r.baggage);row("Route evidence",r.route_evidence+"; direction "+r.direction+"; nonstop: "+r.nonstop);
+    row("Why "+r.relevance,r.relevance_reason);if(r.notes)row("Notes",r.notes);
+    row("Fare status","advertised, not verified as bookable");
+    var ln=el("div");ln.appendChild(link(r.source_url,"Original source"));r.also_sources.forEach(function(u){ln.appendChild(document.createTextNode(" | "));ln.appendChild(link(u,"Also"))});ln.appendChild(el("small"," (checked "+r.source_checked+")"));b.appendChild(ln);
+    d.appendChild(b);box.appendChild(d)})}
+
+/* ---- months ---- */
+var chM=null;
+function months(){
+  var v=Array(12).fill(0),j=Array(12).fill(0);
+  H.records.filter(function(r){return r.record_type==="sale"}).forEach(function(r){var d=dt(r.booking_start||r.booking_end||r.published);(r.airline==="Vietjet"?v:j)[d.getMonth()]++});
+  Chart.defaults.color=css("--mute");chM&&chM.destroy();
+  chM=new Chart(document.getElementById("months"),{type:"bar",data:{labels:MN,datasets:[{label:"Vietjet",data:v,backgroundColor:css("--vj")},{label:"Jetstar",data:j,backgroundColor:css("--js")}]},
+   options:{responsive:true,scales:{x:{stacked:true},y:{stacked:true,beginAtZero:true,ticks:{stepSize:1},title:{display:true,text:"Documented sales (by booking start month, 2023–26)"}}}}});
+  var r=document.getElementById("rules");r.textContent=H.meta.rules.relevance+" "+H.meta.rules.lead_time}
+
+
+/* ---- WSI status (static, dated findings) ---- */
+function wsi(){
+  var c=document.getElementById("wsi");
+  function row(k,v,u){var d=el("div","row");d.appendChild(el("b",null,k+": "));d.appendChild(document.createTextNode(v));if(u){d.appendChild(document.createTextNode(" "));d.appendChild(link(u,"Source"))}c.appendChild(d)}
+  var ch=el("div","chips");ch.appendChild(el("span","chip rec","Vietjet service announced from 10 January 2027"));ch.appendChild(el("span","chip obs","Aug\u2013Nov 2027 fare data not yet collected"));ch.appendChild(el("span","chip spec","Jetstar: No confirmed nonstop service"));c.appendChild(ch);
+  row("Vietjet","Sundays and Wednesdays from 10 Jan 2027, rising to 3 weekly from Mar 2027 (third day not published). Airbus A330. VJ88 departs WSI 12:05, VJ87 departs HCMC 21:25. Tickets on sale since 10 Aug 2026.","https://www.executivetraveller.com/news/vietjet-western-sydney-airport-wsi");
+  row("Nonstop?","Confirmed for the Jan 2027 flights Kiwi returned (one segment, zero stops, WSI to SGN, VJ88, 12:05 to 16:40). Not yet checked for other months.");
+  row("Fare data we hold","Kiwi (20 Oct 2026, manual test) returned 7 Vietjet WSI\u2192SGN flights for 10\u201331 Jan 2027 at A$383\u2013641, checked bag not included, unverified. It returned nothing for 1 Aug\u201315 Nov 2027 in either direction, for any airline. These are fares from a test search, not a tracked price history.");
+  row("Past advertised fares","A$299 one-way (Aug 2026 launch sale) and A$248 (a third-party report) are historical advertised figures, not current availability.","https://www.insideflyer.com/posts/vietjet-adds-ho-chi-minh-city-flights-from-western-sydney/");
+  row("Aug\u2013Nov 2027","No fares and no flights returned. This is most likely a schedule not yet loaded or published that far ahead, but it cannot be told apart from no service. Unknown, not unavailable.");
+  var n=el("div","row mute","Jetstar: No confirmed nonstop services for WSI\u2013SGN. Vietjet WSI\u2013SGN is a real scheduled service, but there is no Aug\u2013Nov 2027 fare data yet.");c.appendChild(n)}
+
+function init(){
+  fetch("data/sales/history.json?"+Date.now()).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){
+    H=j;document.getElementById("meta").textContent="Dataset: "+j.meta.record_count+" records, sources re-checked "+j.meta.generated+".";
+    wsi();calendar();timeline();["fa","fr","fl"].forEach(function(i){document.getElementById(i).addEventListener("change",timeline)});
+    if(window.Chart){fares();months()}else{document.getElementById("fares").parentNode.appendChild(el("div","empty","Charts could not load (offline?). The table below has the same data."))}
+  }).catch(function(){var c=document.getElementById("cal");c.appendChild(el("div","empty","Could not load data/sales/history.json."))})}
+init();
+</script></body></html>
