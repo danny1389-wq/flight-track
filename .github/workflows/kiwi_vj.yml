@@ -1,4 +1,4 @@
-name: Kiwi Vietjet tracker (DRAFT - disabled)
+name: Kiwi Vietjet tracker
 on:
   workflow_dispatch:
     inputs:
@@ -8,8 +8,8 @@ on:
       alerts:
         description: "Type yes to allow email alerts (default no)"
         default: "no"
-  # schedule:                 # NOT enabled. Only add after Kiwi permission is settled and this has been reviewed.
-  #   - cron: "20 20 * * *"   # once a day
+  schedule:
+    - cron: "20 8,20 * * *"   # twice a day, 7:20am and 7:20pm Sydney (AEDT)
 permissions:
   contents: write
   issues: write
@@ -27,7 +27,7 @@ jobs:
           python-version: "3.12"
       - run: python kiwi_vj.py
         env:
-          KIWI_VJ_ENABLED: ${{ github.event.inputs.enable }}
+          KIWI_VJ_ENABLED: ${{ github.event.inputs.enable || 'yes' }}
           KIWI_VJ_ALERTS: ${{ github.event.inputs.alerts }}
           GH_TOKEN: ${{ github.token }}
       - name: Save results
