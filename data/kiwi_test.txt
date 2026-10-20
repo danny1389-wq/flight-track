@@ -1,0 +1,117 @@
+Kiwi MCP test run at 2026-10-20T08:35:06.410377Z (UTC)
+initialize OK: {"jsonrpc": "2.0", "id": 1, "result": {"capabilities": {"experimental": {}, "prompts": {"listChanged": false}, "resources": {"listChanged": false, "subscribe": false}, "tools": {"listChanged": false}}, "instructions": "Flight search for Kiwi.com. Use search-flight to find one-way and return flights 
+TOOL search-flight params: flyFrom,flyTo,departureDate,departureDateFlexDays,departureDateTo,returnDate,returnDateFlexDays,returnDateTo,adults,children,infants,cabinClass,currency,locale,nights_in_dst_from,nights_in_dst_to,one_for_city,max_sector_stopovers,price_from,price_to,max_fly_duration,select_airlines,exclude_airlines,dtime_from,dtime_to,atime_from,atime_to,ret_dtime_from,ret_dtime_to,ret_atime_from,ret_atime_to,stopover_from,stopover_to,adults_hold_bags,adults_hand_bags,children_hold_bags,children_hand_bags,allow_self_transfer,allow_overnight_stopovers,allow_diff_airport_connection,stopover_airports,exclude_stopover_airports,stopover_countries,exclude_stopover_countries,fly_days,ret_fly_days,sort
+TOOL feedback-to-devs params: text
+
+=== SYD->SGN 2027-08-16 NONSTOP (UTC 08:35:07)
+3 itineraries
+  A$556.0  Vietnam Airlines  VN772  stops=0  2027-08-16T10:15:00
+  A$1697.0  VietJet Air  VJ86  stops=0  2027-08-16T10:15:00
+  A$2286.0  VietJet Air  VJ86  stops=0  2027-08-16T10:15:00
+Vietjet itineraries: 3, cheapest A$556.0
+RAW first itinerary: {"id": "037221bc5236000012e734b5_0", "price": 556.0, "priceFormatted": "556 AUD", "totalDurationSeconds": 32400, "bookingUrl": "https://kiwi.com/u/rp9mr3", "imageId": "ho-chi-minh-city_vn", "baggage": {"personalItem": 1, "cabinBag": 1, "checkedBag": 1}, "outbound": {"from": "SYD", "to": "SGN", "departureTime": "2027-08-16T10:15:00", "arrivalTime": "2027-08-16T16:15:00", "durationSeconds": 32400, "stops": 0, "route": ["SYD", "SGN"], "cabinClass": "Economy", "segments": [{"from": "SYD", "to": "SGN", "fromCity": "Sydney", "toCity": "Ho Chi Minh City", "fromName": "Sydney", "toName": "Tan Son Nhat International", "fromCountry": "Australia", "toCountry": "Vietnam", "departureTime": "2027-08-16T10
+
+=== SYD->SGN 2027-08-16 ANY STOPS (UTC 08:35:23)
+15 itineraries
+  A$416.0  Scoot  TR15,TR502  stops=1  2027-08-16T20:35:00
+  A$416.0  Scoot  TR15,TR552  stops=1  2027-08-16T20:35:00
+  A$468.0  Scoot  TR11,TR502  stops=1  2027-08-16T13:00:00
+  A$485.0  Jetstar Airways/VietJet Air  JQ27,VJ808  stops=1  2027-08-16T13:05:00
+  A$500.0  Scoot/VietJet Air  TR15,TR658,VJ808  stops=2  2027-08-16T20:35:00
+  A$526.0  Scoot/Vietnam Airlines  TR11,VN656  stops=1  2027-08-16T13:00:00
+  A$535.0  Scoot/Vietnam Airlines  TR11,VN656  stops=1  2027-08-16T13:00:00
+  A$542.0  Scoot/VietJet Air  TR15,TR608,VJ804  stops=2  2027-08-16T20:35:00
+  A$556.0  Vietnam Airlines  VN772  stops=0  2027-08-16T10:15:00
+  A$570.0  Scoot/AirAsia  TR11,TR466,AK520  stops=2  2027-08-16T13:00:00
+  A$634.0  Cathay Pacific  CX138,CX767  stops=1  2027-08-16T21:55:00
+  A$643.0  Cebu Pacific  5J40,5J751  stops=1  2027-08-16T11:15:00
+  A$701.0  Vietnam Airlines  VN786,VN6025  stops=1  2027-08-16T14:15:00
+  A$703.0  Singapore Airlines  SQ262,SQ8536  stops=1  2027-08-16T22:55:00
+  A$704.0  Singapore Airlines  SQ212,SQ8534  stops=1  2027-08-16T07:25:00
+Vietjet itineraries: 7, cheapest A$485.0
+RAW first itinerary: {"id": "037221bc52360000a8242a6f_0|037221bc52360000a8242a6f_1", "price": 416.0, "priceFormatted": "416 AUD", "totalDurationSeconds": 52800, "bookingUrl": "https://kiwi.com/u/8mup83", "imageId": "ho-chi-minh-city_vn", "baggage": {"personalItem": 1, "cabinBag": 1, "checkedBag": 0}, "outbound": {"from": "SYD", "to": "SGN", "departureTime": "2027-08-16T20:35:00", "arrivalTime": "2027-08-17T08:15:00", "durationSeconds": 52800, "stops": 1, "route": ["SYD", "SIN", "SGN"], "cabinClass": "Economy", "segments": [{"from": "SYD", "to": "SIN", "fromCity": "Sydney", "toCity": "Singapore", "fromName": "Sydney", "toName": "Singapore Changi", "fromCountry": "Australia", "toCountry": "Singapore", "departureTi
+
+=== SGN->SYD 2027-08-29 NONSTOP (UTC 08:35:38)
+4 itineraries
+  A$191.0  Jetstar Airways  JQ62  stops=0  2027-08-29T22:40:00
+  A$1197.0  Qantas  QF5554  stops=0  2027-08-29T22:40:00
+  A$1272.0  Vietnam Airlines  VN773  stops=0  2027-08-29T20:45:00
+  A$2225.0  VietJet Air  VJ85  stops=0  2027-08-29T19:55:00
+Vietjet itineraries: 2, cheapest A$1272.0
+RAW first itinerary: {"id": "21bc037252430000cb0d1cc7_0", "price": 191.0, "priceFormatted": "191 AUD", "totalDurationSeconds": 30600, "bookingUrl": "https://kiwi.com/u/rdn6su", "imageId": "sydney_ns_au", "baggage": {"personalItem": 1, "cabinBag": 0, "checkedBag": 0}, "outbound": {"from": "SGN", "to": "SYD", "departureTime": "2027-08-29T22:40:00", "arrivalTime": "2027-08-30T10:10:00", "durationSeconds": 30600, "stops": 0, "route": ["SGN", "SYD"], "cabinClass": "Economy", "segments": [{"from": "SGN", "to": "SYD", "fromCity": "Ho Chi Minh City", "toCity": "Sydney", "fromName": "Tan Son Nhat International", "toName": "Sydney", "fromCountry": "Vietnam", "toCountry": "Australia", "departureTime": "2027-08-29T22:40:00"
+
+=== SGN->SYD 2027-08-29 ANY STOPS (UTC 08:35:54)
+15 itineraries
+  A$191.0  Jetstar Airways  JQ62  stops=0  2027-08-29T22:40:00
+  A$408.0  AirAsia/AirAsia X/Jetstar Airways  AK529,D7218,JQ372  stops=2  2027-08-29T12:40:00
+  A$408.0  AirAsia/AirAsia X/Jetstar Airways  AK529,D7218,JQ374  stops=2  2027-08-29T12:40:00
+  A$408.0  AirAsia/AirAsia X/Jetstar Airways  AK521,D7218,JQ374  stops=2  2027-08-29T08:35:00
+  A$449.0  AirAsia/AirAsia X/Virgin Australia Airlines  AK529,D7218,VA811  stops=2  2027-08-29T12:40:00
+  A$449.0  AirAsia/AirAsia X/Virgin Australia Airlines  AK529,D7218,VA817  stops=2  2027-08-29T12:40:00
+  A$453.0  AirAsia/AirAsia X/Jetstar Airways  AK529,D7218,JQ502  stops=2  2027-08-29T12:40:00
+  A$453.0  AirAsia/AirAsia X/Jetstar Airways  AK529,D7218,JQ504  stops=2  2027-08-29T12:40:00
+  A$472.0  Scoot  TR517,TR10  stops=1  2027-08-29T18:15:00
+  A$472.0  Scoot  TR553,TR10  stops=1  2027-08-29T15:40:00
+  A$496.0  AirAsia/AirAsia X/Qantas  AK529,D7218,QF1836  stops=2  2027-08-29T12:40:00
+  A$590.0  VietJet Air/Jetstar Airways  VJ805,JQ30,JQ374  stops=2  2027-08-29T17:15:00
+  A$622.0  VietJet Air/Virgin Australia Airlines  VJ893,VA66  stops=1  2027-08-29T08:15:00
+  A$650.0  VietJet Air/Jetstar Airways  VJ860,JQ48  stops=1  2027-08-29T12:20:00
+  A$655.0  Vietnam Airlines/Jetstar Airways  VN781,JQ374  stops=1  2027-08-29T21:25:00
+Vietjet itineraries: 4, cheapest A$590.0
+RAW first itinerary: {"id": "21bc037252430000cb0d1cc7_0", "price": 191.0, "priceFormatted": "191 AUD", "totalDurationSeconds": 30600, "bookingUrl": "https://kiwi.com/u/ctq8z3m", "imageId": "sydney_ns_au", "baggage": {"personalItem": 1, "cabinBag": 0, "checkedBag": 0}, "outbound": {"from": "SGN", "to": "SYD", "departureTime": "2027-08-29T22:40:00", "arrivalTime": "2027-08-30T10:10:00", "durationSeconds": 30600, "stops": 0, "route": ["SGN", "SYD"], "cabinClass": "Economy", "segments": [{"from": "SGN", "to": "SYD", "fromCity": "Ho Chi Minh City", "toCity": "Sydney", "fromName": "Tan Son Nhat International", "toName": "Sydney", "fromCountry": "Vietnam", "toCountry": "Australia", "departureTime": "2027-08-29T22:40:00
+
+=== SGN->SYD 2027-08-31 NONSTOP (UTC 08:36:10)
+2 itineraries
+  A$1272.0  Vietnam Airlines  VN773  stops=0  2027-08-31T20:45:00
+  A$2225.0  VietJet Air  VJ85  stops=0  2027-08-31T19:55:00
+Vietjet itineraries: 2, cheapest A$1272.0
+RAW first itinerary: {"id": "21bc037252450000931cd5a7_0", "price": 1272.0, "priceFormatted": "1272 AUD", "totalDurationSeconds": 30600, "bookingUrl": "https://kiwi.com/u/d6xgdh", "imageId": "sydney_ns_au", "baggage": {"personalItem": 1, "cabinBag": 1, "checkedBag": 1}, "outbound": {"from": "SGN", "to": "SYD", "departureTime": "2027-08-31T20:45:00", "arrivalTime": "2027-09-01T08:15:00", "durationSeconds": 30600, "stops": 0, "route": ["SGN", "SYD"], "cabinClass": "Economy", "segments": [{"from": "SGN", "to": "SYD", "fromCity": "Ho Chi Minh City", "toCity": "Sydney", "fromName": "Tan Son Nhat International", "toName": "Sydney", "fromCountry": "Vietnam", "toCountry": "Australia", "departureTime": "2027-08-31T20:45:0
+
+=== SGN->SYD 2027-08-31 ANY STOPS (UTC 08:36:26)
+15 itineraries
+  A$325.0  Scoot  TR517,TR10  stops=1  2027-08-31T18:15:00
+  A$370.0  Scoot  TR553,TR10  stops=1  2027-08-31T15:40:00
+  A$503.0  Scoot/Jetstar Airways  TR503,TR16,JQ989  stops=2  2027-08-31T09:15:00
+  A$562.0  Scoot/Qantas  TR517,TR58,QF1836  stops=2  2027-08-31T18:15:00
+  A$570.0  Singapore Airlines/Scoot  SQ185,TR10  stops=1  2027-08-31T19:40:00
+  A$587.0  Philippine Airlines  PR592,PR211  stops=1  2027-08-31T09:30:00
+  A$594.0  VietJet Air/Nok Air/Jetstar Airways  VJ803,DD530,JQ28  stops=2  2027-08-31T11:15:00
+  A$594.0  VietJet Air/Thai Vietjet/Jetstar Airways  VJ803,VZ306,JQ28  stops=2  2027-08-31T11:15:00
+  A$605.0  AirAsia/Scoot  AK525,AK701,TR14  stops=2  2027-08-31T22:05:00
+  A$622.0  VietJet Air/Virgin Australia Airlines  VJ893,VA66  stops=1  2027-08-31T08:15:00
+  A$622.0  VietJet Air/Jetstar Airways  VJ893,JQ38  stops=1  2027-08-31T08:15:00
+  A$637.0  Vietnam Airlines/Jetstar Airways  VN781,JQ608  stops=1  2027-08-31T21:25:00
+  A$640.0  Vietnam Airlines/Jetstar Airways  VN641,JQ38  stops=1  2027-08-31T10:10:00
+  A$640.0  Vietnam Airlines/Virgin Australia Airlines  VN641,VA66  stops=1  2027-08-31T10:10:00
+  A$665.0  Vietnam Airlines/Jetstar Airways  VN781,JQ512  stops=1  2027-08-31T21:25:00
+Vietjet itineraries: 8, cheapest A$594.0
+RAW first itinerary: {"id": "21bc037252450000a2109541_0|21bc037252450000a2109541_1", "price": 325.0, "priceFormatted": "325 AUD", "totalDurationSeconds": 52200, "bookingUrl": "https://kiwi.com/u/rdncbzk", "imageId": "sydney_ns_au", "baggage": {"personalItem": 1, "cabinBag": 1, "checkedBag": 0}, "outbound": {"from": "SGN", "to": "SYD", "departureTime": "2027-08-31T18:15:00", "arrivalTime": "2027-09-01T11:45:00", "durationSeconds": 52200, "stops": 1, "route": ["SGN", "SIN", "SYD"], "cabinClass": "Economy", "segments": [{"from": "SGN", "to": "SIN", "fromCity": "Ho Chi Minh City", "toCity": "Singapore", "fromName": "Tan Son Nhat International", "toName": "Singapore Changi", "fromCountry": "Vietnam", "toCountry": "Si
+
+=== SYD->SGN 2027-08-29 NONSTOP (UTC 08:36:42)
+4 itineraries
+  A$292.0  VietJet Air  VJ86  stops=0  2027-08-29T10:15:00
+  A$300.0  Jetstar Airways  JQ61  stops=0  2027-08-29T15:10:00
+  A$556.0  Vietnam Airlines  VN772  stops=0  2027-08-29T10:15:00
+  A$745.0  Qantas  QF5553  stops=0  2027-08-29T15:10:00
+Vietjet itineraries: 2, cheapest A$292.0
+RAW first itinerary: {"id": "037221bc524300002605a128_0", "price": 292.0, "priceFormatted": "292 AUD", "totalDurationSeconds": 31800, "bookingUrl": "https://kiwi.com/u/qr6gf8j", "imageId": "ho-chi-minh-city_vn", "baggage": {"personalItem": 1, "cabinBag": 1, "checkedBag": 0}, "outbound": {"from": "SYD", "to": "SGN", "departureTime": "2027-08-29T10:15:00", "arrivalTime": "2027-08-29T16:05:00", "durationSeconds": 31800, "stops": 0, "route": ["SYD", "SGN"], "cabinClass": "Economy", "segments": [{"from": "SYD", "to": "SGN", "fromCity": "Sydney", "toCity": "Ho Chi Minh City", "fromName": "Sydney", "toName": "Tan Son Nhat International", "fromCountry": "Australia", "toCountry": "Vietnam", "departureTime": "2027-08-29T1
+
+=== SYD->SGN 2027-08-29 ANY STOPS (UTC 08:36:58)
+15 itineraries
+  A$292.0  VietJet Air  VJ86  stops=0  2027-08-29T10:15:00
+  A$300.0  Jetstar Airways  JQ61  stops=0  2027-08-29T15:10:00
+  A$428.0  Scoot/VietJet Air  TR15,TR510,VJ623  stops=2  2027-08-29T20:35:00
+  A$429.0  Scoot  TR15,TR502  stops=1  2027-08-29T20:35:00
+  A$429.0  Scoot  TR15,TR552  stops=1  2027-08-29T20:35:00
+  A$488.0  Scoot  TR11,TR502  stops=1  2027-08-29T13:00:00
+  A$556.0  Vietnam Airlines  VN772  stops=0  2027-08-29T10:15:00
+  A$662.0  Jetstar Airways/Vietnam Airlines  JQ613,VN780  stops=1  2027-08-29T21:20:00
+  A$663.0  Cathay Pacific  CX138,CX767  stops=1  2027-08-29T21:55:00
+  A$663.0  Cathay Pacific  CX138,CX769  stops=1  2027-08-29T21:55:00
+  A$703.0  Singapore Airlines  SQ262,SQ8536  stops=1  2027-08-29T22:55:00
+  A$704.0  Singapore Airlines  SQ212,SQ8534  stops=1  2027-08-29T07:25:00
+  A$707.0  Singapore Airlines  SQ262,SQ8538  stops=1  2027-08-29T22:55:00
+  A$745.0  Qantas  QF5553  stops=0  2027-08-29T15:10:00
+  A$791.0  Batik Air Malaysia/AirAsia  OD120,AK520  stops=1  2027-08-29T22:15:00
+Vietjet itineraries: 4, cheapest A$292.0
+RAW first itinerary: {"id": "037221bc524300002605a128_0", "price": 292.0, "priceFormatted": "292 AUD", "totalDurationSeconds": 31800, "bookingUrl": "https://kiwi.com/u/qhuqqcy", "imageId": "ho-chi-minh-city_vn", "baggage": {"personalItem": 1, "cabinBag": 1, "checkedBag": 0}, "outbound": {"from": "SYD", "to": "SGN", "departureTime": "2027-08-29T10:15:00", "arrivalTime": "2027-08-29T16:05:00", "durationSeconds": 31800, "stops": 0, "route": ["SYD", "SGN"], "cabinClass": "Economy", "segments": [{"from": "SYD", "to": "SGN", "fromCity": "Sydney", "toCity": "Ho Chi Minh City", "fromName": "Sydney", "toName": "Tan Son Nhat International", "fromCountry": "Australia", "toCountry": "Vietnam", "departureTime": "2027-08-29T1
