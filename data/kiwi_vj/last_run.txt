@@ -4,14 +4,14 @@ SYD->SGN 2027-08-15..2027-08-21: 14 itineraries
 SYD->SGN 2027-08-22..2027-08-28: 13 itineraries
 SYD->SGN 2027-08-29..2027-09-04: 12 itineraries
 SYD->SGN 2027-09-05..2027-09-11: 14 itineraries
-SYD->SGN 2027-09-12..2027-09-18: 8 itineraries
+SYD->SGN 2027-09-12..2027-09-18: 9 itineraries
 SYD->SGN 2027-09-19..2027-09-25: 0 itineraries
 SYD->SGN 2027-09-26..2027-10-02: 0 itineraries
 SGN->SYD 2027-08-13..2027-08-19: 7 itineraries
 SGN->SYD 2027-08-20..2027-08-26: 7 itineraries
 SGN->SYD 2027-08-27..2027-09-02: 7 itineraries
 SGN->SYD 2027-09-03..2027-09-09: 7 itineraries
-SGN->SYD 2027-09-10..2027-09-16: 6 itineraries
+SGN->SYD 2027-09-10..2027-09-16: 7 itineraries
 SGN->SYD 2027-09-17..2027-09-23: 0 itineraries
 SGN->SYD 2027-09-24..2027-09-30: 0 itineraries
-16 requests. 46 outbound and 34 return dates with a price this run. 65 trips priced, 0 at or under A$500.
+16 requests. 47 outbound and 35 return dates with a price this run. 67 trips priced, 0 at or under A$500.
