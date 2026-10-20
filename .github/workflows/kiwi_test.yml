@@ -12,7 +12,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: python kiwi_test.py
+      - run: python data/kiwi_test.py
       - name: Save result
         if: always()
         run: |
