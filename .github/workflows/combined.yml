@@ -1,7 +1,7 @@
 name: Combined fares merge
 on:
   workflow_run:
-    workflows: ["Track fares", "Kiwi Vietjet tracker (DRAFT - disabled)"]
+        workflows: ["Track fares", "Kiwi Vietjet tracker"]
     types: [completed]
   workflow_dispatch:
     inputs:
