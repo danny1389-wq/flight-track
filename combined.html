@@ -71,8 +71,7 @@ function render(){
   var rows=D.trips.filter(function(t){return(all||t.price<=D.cap)&&(!cur||t.status==="current")&&(!cb||t.combo===cb)});
   var L=document.getElementById("list");L.textContent="";
   var none=document.getElementById("none");
-  if(!rows.length){none.hidden=false;none.text
-  if(!rows.length){none.hidden=false;none.textContent=D.trips.length?"No trips match these filters. Cheapest overall: A$"+D.trips[0].price+" ("+D.trips[0].combo+", "+nice(D.trips[0].depart)+"). Tick 'Also show trips over A$"+D.cap+"' to see more.":"No combined trips yet: no outbound date has a matching return 12 or 15 days later with a price. This is not proof that no fares exist."}else none.hidden=true;
+    if(!rows.length){none.hidden=false;none.textContent=D.trips.length?"No trips match these filters. Cheapest overall: A$"+D.trips[0].price+" ("+D.trips[0].combo+", "+nice(D.trips[0].depart)+"). Tick 'Also show trips over A$"+D.cap+"' to see more.":"No combined trips yet: no outbound date has a matching return 12 or 15 days later with a price. This is not proof that no fares exist."}else none.hidden=true;
   rows.slice(0,25).forEach(function(t){L.appendChild(card(t))});
   if(rows.length>25)L.appendChild(el("p","sub","Showing the cheapest 25 of "+rows.length+"."))}
 function init(){
