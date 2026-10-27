@@ -38,7 +38,10 @@ summary{cursor:pointer;padding:10px 14px;font-weight:600}.det{padding:0 14px 12p
 .bagbox{border-top:1px solid var(--line);margin:8px 0 0;padding:8px 0 0;font-size:.88rem;text-align:left}
 .bagbox div{display:flex;justify-content:space-between;gap:10px;margin:2px 0}.bagbox .v{font-variant-numeric:tabular-nums;text-align:right}
 .bagbox .tot{font-weight:700;margin-top:4px}.bagbox .unk{color:var(--warn)}.bagbox small{display:block;color:var(--mute)}.vjwarn{border:1px dashed var(--warn);border-radius:8px;padding:8px 10px;margin:8px 0 0;font-size:.85rem;text-align:left}.vjwarn small{display:block;color:var(--mute);margin-top:3px}.vjwarn .vjal{color:var(--warn)}.vjwarn a{display:inline-block;margin-top:4px}.bagbox .vjn{margin-top:3px}
-.hero .rt{font-size:.82rem;color:var(--mute)}.hero .soft{font-size:.76rem;color:var(--mute);margin-top:4px}.sum{border-top:1px solid var(--line);margin-top:8px;padding-top:6px;font-size:.88rem}.sum div{display:flex;justify-content:space-between;gap:10px;margin:2px 0}.sum .v{font-variant-numeric:tabular-nums;text-align:right}.sum .tot{font-weight:700}.sum .unk{color:var(--warn)}.lg{display:flex;justify-content:space-between;gap:10px;align-items:baseline;border-top:1px solid var(--line);margin-top:6px;padding-top:6px;font-size:.84rem}.lg .lgm{min-width:0}.lg .lgl{white-space:nowrap;font-weight:500;font-size:.8rem}.acts{display:flex;flex-wrap:wrap;gap:6px 14px;margin:8px 0 0;font-size:.82rem}.acts a.sec{font-weight:500;color:var(--mute)}details.fd{border:0;border-top:1px solid var(--line);border-radius:0;margin:8px 0 0;background:transparent}details.fd summary{padding:6px 0;font-weight:500;font-size:.82rem;color:var(--mute)}details.fd .det{padding:0 0 4px}
+.hero .amt.tot{color:var(--good)}.hero .seatfare{font-size:.9rem;margin-top:6px}.hero .seatfare b{font-variant-numeric:tabular-nums}.hero .tb{margin-top:6px}.hero .tt{font-size:1.15rem;font-weight:700;font-variant-numeric:tabular-nums}.hero .ti{font-size:.82rem;color:var(--mute)}.hero .tw2{font-size:.8rem;color:var(--warn);font-weight:600;margin-top:2px}.hero .rt{font-size:.82rem;color:var(--mute)}.hero .soft{font-size:.76rem;color:var(--mute);margin-top:4px}.sum{border-top:1px solid var(--line);margin-top:8px;padding-top:6px;font-size:.88rem}.sum div{display:flex;justify-content:space-between;gap:10px;margin:2px 0}.sum .v{font-variant-numeric:tabular-nums;text-align:right}.sum .tot{font-weight:700}.sum .unk{color:var(--warn)}.lg{display:flex;justify-content:space-between;gap:10px;align-items:baseline;border-top:1px solid var(--line);margin-top:6px;padding-top:6px;font-size:.84rem}.lg .lgm{min-width:0}.lg .lgl{white-space:nowrap;font-weight:500;font-size:.8rem}.acts{display:flex;flex-wrap:wrap;gap:6px 14px;margin:8px 0 0;font-size:.82rem}.acts a.sec{font-weight:500;color:var(--mute)}details.fd{border:0;border-top:1px solid var(--line);border-radius:0;margin:8px 0 0;background:transparent}details.fd summary{padding:6px 0;font-weight:500;font-size:.82rem;color:var(--mute)}details.fd .det{padding:0 0 4px}
+.hero .dts{font-size:1rem}.hero .rt{font-size:.8rem}.hero .tw2{font-size:.74rem}.hero .tt{font-size:1.1rem}.hero .soft{font-size:.74rem}
+.lg{display:block}.lg1{display:flex;justify-content:space-between;gap:10px;font-size:.9rem;font-weight:600}.lg1 b{font-variant-numeric:tabular-nums}.lg2{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:.78rem;color:var(--mute);margin-top:1px}.lg2 .lgl{font-weight:500;white-space:nowrap}
+.acts{display:block;margin-top:6px}.acts .vjl{display:block;padding:8px 0;font-size:.88rem}.cmp{font-size:.78rem;color:var(--mute);padding:2px 0 4px}.cmp a.sec{font-weight:500}
 .empty{padding:20px;border:1px dashed var(--line);border-radius:8px;color:var(--mute)}
 </style></head><body><main>
 <h1>SYD / WSI ↔ SGN Flight Tracker</h1>
@@ -98,14 +101,14 @@ var SK_PREFILL=true; /* UNTESTED format: /transport/flights/{from}/{to}/{yymmdd}
 function yymmdd(d){return d.slice(2,4)+d.slice(5,7)+d.slice(8,10)}
 function skDeep(t){return SK_HOME+"transport/flights/"+t.out.from.toLowerCase()+"/"+t.out.to.toLowerCase()+"/"+yymmdd(t.depart)+"/"+yymmdd(t.return)+"/?adultsv2=1&cabinclass=economy&rtn=1"}
 function skUrl(t){return SK_PREFILL?skDeep(t):SK_HOME}
+function nd(d){return new Date(d+"T00:00:00").toLocaleDateString("en-AU",{weekday:"short",day:"numeric",month:"short"}).replace(",","")}
 function mkLink(u,txt,cls){var a=el("a",cls||null,txt);a.href=u;a.target="_blank";a.rel="noopener";return a}
 function legRow(l,label){
-  var d=el("div","lg"),m=el("div","lgm");
-  m.appendChild(el("b",null,label+" "+nice(l.date)));
-  m.appendChild(el("span",null," · "+l.from+" → "+l.to+" · "+l.airline+(l.flight?" "+l.flight:"")+" · "));
-  m.appendChild(el("b",null,"A$"+Math.round(l.price)));d.appendChild(m);
-  var u=safe(l.url);if(u)d.appendChild(mkLink(u,l.source.indexOf("kiwi")===0?"Check on Kiwi":"Check on Google Flights","lgl"));
-  return d}
+  var d=el("div","lg"),r1=el("div","lg1");
+  r1.appendChild(el("span",null,label+" \u00b7 "+nd(l.date)));r1.appendChild(el("b",null,"A$"+Math.round(l.price)));d.appendChild(r1);
+  var r2=el("div","lg2");r2.appendChild(el("span",null,l.from+" \u2192 "+l.to+" \u00b7 "+l.airline+(l.flight?" "+l.flight:"")));
+  var u=safe(l.url);if(u)r2.appendChild(mkLink(u,l.source.indexOf("kiwi")===0?"Check on Kiwi":"Check on Google Flights","lgl"));
+  d.appendChild(r2);return d}
 function totals(t){
   var known=0,carry=0,vj=false;
   [t.out,t.back].forEach(function(l){var c=BAG[l.airline];
@@ -136,10 +139,15 @@ function details(t){
   d.appendChild(w);return d}
 function card(t){
   var c=el("div","card"+(t.price<=D.cap?" deal":"")),h=el("div","hero"),vj=hasVJ(t);
-  h.appendChild(el("div","amt"+(t.price<=D.cap?" deal":""),"A$"+t.price));
-  h.appendChild(el("div","lbl","seat-only return, per passenger"));
-  h.appendChild(el("div","dts",nice(t.depart)+" → "+nice(t.return)+" · "+t.days+" days"));
-  h.appendChild(el("div","rt",t.out.from+" → "+t.out.to+" → "+t.back.to+" · "+t.combo));
+  var x=totals(t),tb=el("div","tb");
+  h.appendChild(el("div","amt tot","A$"+x.total));
+  h.appendChild(el("div","lbl tl",x.vj?"estimated total so far, per passenger":"estimated total, per passenger"));
+  tb.appendChild(el("div","ti",x.extra?"Includes A$"+x.extra+" Jetstar checked baggage + carry-on":"Includes no baggage costs (none known for this trip)"));
+  if(x.vj)tb.appendChild(el("div","tw2","Vietjet baggage not included \u2014 final total will be higher."));
+  var sf=el("div","seatfare");sf.appendChild(document.createTextNode("Seat-only return fare: "));sf.appendChild(el("b",null,"A$"+t.price));tb.appendChild(sf);
+  h.appendChild(tb);
+  h.appendChild(el("div","dts",nd(t.depart)+" \u2192 "+nd(t.return)+" "+t.return.slice(0,4)));
+  h.appendChild(el("div","rt",t.days+" days \u00b7 "+t.out.from+" \u2192 "+t.out.to+" \u2192 "+t.back.to+" \u00b7 "+t.combo));
   var ch=el("div","chips");
   ch.appendChild(el("span","chip bad","Unverified"));
   if(t.status!=="current")ch.appendChild(el("span","chip bad","Stale prices"));
@@ -147,12 +155,12 @@ function card(t){
   else if(t.price<=D.cap)ch.appendChild(el("span","chip ok","At or under A$"+D.cap));
   h.appendChild(ch);
   h.appendChild(el("div","soft",vj?"Kiwi fare is indicative — verify before booking.":"Fare is a reading — verify before booking."));
-  c.appendChild(h);c.appendChild(summary(t));
+  c.appendChild(h);
   c.appendChild(legRow(t.out,"Out"));c.appendChild(legRow(t.back,"Back"));
   var ac=el("div","acts");
-  if(vj)ac.appendChild(mkLink("https://www.vietjetair.com/en","Check price on Vietjet"));
-  ac.appendChild(mkLink(cfUrl(t),"Check on Cheapflights","sec"));ac.appendChild(mkLink(skUrl(t),"Check on Skyscanner","sec"));
-  c.appendChild(ac);c.appendChild(details(t));return c}
+  if(vj)ac.appendChild(mkLink("https://www.vietjetair.com/en","Check price on Vietjet","vjl"));
+  var cp=el("div","cmp");cp.appendChild(el("span",null,"Compare: "));cp.appendChild(mkLink(cfUrl(t),"Cheapflights","sec"));cp.appendChild(el("span",null," \u00b7 "));cp.appendChild(mkLink(skUrl(t),"Skyscanner","sec"));
+  ac.appendChild(cp);c.appendChild(ac);c.appendChild(details(t));return c}
 var AP="SYD";
 function setAp(v){AP=v;[].forEach.call(document.querySelectorAll(".tabs button"),function(b){b.setAttribute("aria-selected",b.dataset.ap===v?"true":"false")});render()}
 function render(){
