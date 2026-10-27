@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SYD / WSI to SGN Flight Tracker</title>
+<style>
+[hidden]{display:none!important}
+:root{--bg:#eef3f6;--ink:#14213d;--mute:#5b6b82;--card:#fff;--line:#d5dee6;--good:#0e7c7b;--warn:#b4452c;--chip:#e3ebf1}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1a2b;--ink:#e8eef5;--mute:#93a3b8;--card:#17263c;--line:#27384f;--good:#4fd1c5;--warn:#f08a6c;--chip:#223650}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.45}
+main{max-width:980px;margin:0 auto;padding:14px 16px 40px}
+h1{font-size:clamp(1.25rem,4.5vw,1.8rem);margin:0 0 2px;letter-spacing:-.02em}
+h2{font-size:1.15rem;margin:28px 0 10px}
+.sub{color:var(--mute);margin:0 0 4px;font-size:.92rem}.warn{color:var(--warn)}
+.note{border:1px dashed var(--line);border-radius:8px;padding:10px 12px;color:var(--mute);font-size:.88rem;margin:12px 0}
+.tools{display:flex;flex-wrap:wrap;gap:8px 18px;margin:14px 0;font-size:.92rem}
+.tools label{display:flex;align-items:center;gap:6px}select{font:inherit;padding:4px 6px;border-radius:6px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:0 0 10px}
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.price{font-size:1.5rem;font-weight:700;font-variant-numeric:tabular-nums}.price.deal{color:var(--good)}
+.dates{font-weight:600}.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.chip{background:var(--chip);border-radius:99px;padding:2px 10px;font-size:.78rem}.chip.bad{color:var(--warn);font-weight:600}.chip.ok{color:var(--good);font-weight:600}
+.leg{border-top:1px solid var(--line);padding:8px 0 0;margin-top:8px;font-size:.88rem}.leg b{font-variant-numeric:tabular-nums}
+.leg small{display:block;color:var(--mute)}a{color:var(--ink);font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:.9rem;background:var(--card);border:1px solid var(--line);border-radius:8px}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line)}th{color:var(--mute);font-weight:600}
+.tabs{display:flex;gap:4px;background:var(--chip);padding:4px;border-radius:10px;margin:8px 0}
+.tabs button{flex:1;min-height:42px;border:0;border-radius:8px;background:transparent;color:var(--ink);font:inherit;font-weight:600;cursor:pointer}
+.tabs button[aria-selected=true]{background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.tabs button:focus-visible{outline:2px solid var(--good)}
+.tw{overflow-x:auto}details{background:var(--card);border:1px solid var(--line);border-radius:10px;margin:14px 0 0}
+summary{cursor:pointer;padding:10px 14px;font-weight:600}.det{padding:0 14px 12px;font-size:.88rem;color:var(--mute)}.det p{margin:6px 0}
+.warnbar{margin:8px 0;border-style:dashed}.warnbar summary{padding:8px 12px;font-weight:500;font-size:.86rem;color:var(--mute)}.warnbar summary b{color:var(--warn)}
+.fresh{font-size:.8rem;color:var(--mute);margin:0 0 6px}
+.card.deal{border-color:var(--good)}
+.hero{text-align:center;padding:4px 0 2px}.hero .amt{font-size:2.6rem;font-weight:800;line-height:1.05;font-variant-numeric:tabular-nums}.hero .amt.deal{color:var(--good)}
+.hero .lbl{font-size:.8rem;color:var(--mute)}.hero .dts{font-weight:700;margin-top:6px}.hero .chips{justify-content:center}
+.leg .k{display:block;margin-top:2px}.leg .bag{display:block;font-weight:600;color:var(--ink)}
+.bagbox{border-top:1px solid var(--line);margin:8px 0 0;padding:8px 0 0;font-size:.88rem;text-align:left}
+.bagbox div{display:flex;justify-content:space-between;gap:10px;margin:2px 0}.bagbox .v{font-variant-numeric:tabular-nums;text-align:right}
+.bagbox .tot{font-weight:700;margin-top:4px}.bagbox .unk{color:var(--warn)}.bagbox small{display:block;color:var(--mute)}.vjwarn{border:1px dashed var(--warn);border-radius:8px;padding:8px 10px;margin:8px 0 0;font-size:.85rem;text-align:left}.vjwarn small{display:block;color:var(--mute);margin-top:3px}.vjwarn .vjal{color:var(--warn)}.vjwarn a{display:inline-block;margin-top:4px}.bagbox .vjn{margin-top:3px}
+.hero .rt{font-size:.82rem;color:var(--mute)}.hero .soft{font-size:.76rem;color:var(--mute);margin-top:4px}.sum{border-top:1px solid var(--line);margin-top:8px;padding-top:6px;font-size:.88rem}.sum div{display:flex;justify-content:space-between;gap:10px;margin:2px 0}.sum .v{font-variant-numeric:tabular-nums;text-align:right}.sum .tot{font-weight:700}.sum .unk{color:var(--warn)}.lg{display:flex;justify-content:space-between;gap:10px;align-items:baseline;border-top:1px solid var(--line);margin-top:6px;padding-top:6px;font-size:.84rem}.lg .lgm{min-width:0}.lg .lgl{white-space:nowrap;font-weight:500;font-size:.8rem}.acts{display:flex;flex-wrap:wrap;gap:6px 14px;margin:8px 0 0;font-size:.82rem}.acts a.sec{font-weight:500;color:var(--mute)}details.fd{border:0;border-top:1px solid var(--line);border-radius:0;margin:8px 0 0;background:transparent}details.fd summary{padding:6px 0;font-weight:500;font-size:.82rem;color:var(--mute)}details.fd .det{padding:0 0 4px}
+.empty{padding:20px;border:1px dashed var(--line);border-radius:8px;color:var(--mute)}
+</style></head><body><main>
+<h1>SYD / WSI ↔ SGN Flight Tracker</h1>
+<p class="sub" style="margin:0">Nonstop, A$, 12- or 15-day returns, two one-way tickets.</p>
+<p class="fresh" id="meta">Loading...</p>
+<p class="sub vjtop" style="margin:4px 0;color:var(--warn)"><b>Vietjet alerts</b> use unconfirmed Kiwi indicative prices. Verify on Vietjet’s website.</p>
+<details class="note warnbar"><summary><b>Unverified prices</b> – tap for what that means</summary><div class="det">Not confirmed bookable and checked baggage not verified. Kiwi prices are all-in per adult; Jetstar prices are Google Flights readings. A date with no reading is <b>unknown</b>, not unavailable.</div></details>
+<div class="tabs" role="tablist" aria-label="Airport"><button role="tab" data-ap="SYD" aria-selected="true">SYD</button><button role="tab" data-ap="WSI" aria-selected="false">WSI</button><button role="tab" data-ap="ALL" aria-selected="false">All</button></div>
+<div id="wsiLine" class="sub" hidden>WSI: no fares collected yet (unknown). See the WSI tab.</div>
+<div id="wsiCard" class="card" hidden>
+<div class="top"><b>Western Sydney (WSI) ↔ Ho Chi Minh City (SGN)</b><span class="chip bad">No fare data</span></div>
+<p class="sub" style="margin:8px 0 4px">Vietjet service announced from 10 January 2027. August–November 2027 fare data not yet collected. Jetstar: No confirmed nonstop service.</p>
+<p class="sub" style="margin:4px 0 0">Price: <b>unknown</b></p>
+<details><summary>Previous test results</summary><div class="det">
+<p>One-off manual Kiwi test, 20 Oct 2026 (not tracked).</p>
+<p>January 2027, WSI to SGN: 7 Vietjet nonstop flights (VJ88, Sun and Wed, 12:05 to 16:40), A$383 to A$641, checked bag not included, unverified.</p>
+<p>August–November 2027, both directions, any airline: no results (schedule not loaded or not published, which is not the same as unavailable).</p>
+<p>WSI stays out of rankings, deal counts and alerts until WSI fares are collected.</p></div></details>
+</div>
+<div id="main1">
+<div class="tools">
+  <label><input type="checkbox" id="all"> Also show trips over A$500</label>
+  <label><input type="checkbox" id="cur"> Current prices only</label>
+  <label>Airlines <select id="combo"><option value="">All combinations</option></select></label>
+</div>
+<div id="none" class="empty" hidden></div>
+<div id="list"></div>
+<h2>Cheapest by airline combination</h2>
+<div class="tw"><table id="byCombo"><thead><tr><th>Outbound + return</th><th>Cheapest</th><th>Dates</th><th>Trips priced</th></tr></thead><tbody></tbody></table></div>
+<details><summary>Data coverage</summary><div class="det">
+<div class="tw"><table id="cov"><thead><tr><th>Source</th><th>Direction</th><th>Dates with a price</th><th>Range</th></tr></thead><tbody></tbody></table></div>
+<p>Dates outside these ranges have no reading yet. That does not mean no flight exists.</p></div></details>
+<details><summary>Baggage estimate assumptions</summary><div class="det" id="bagnote"></div></details>
+</div>
+</main><script>
+var D=null;
+function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+function ago(iso){if(!iso)return"unknown";var h=(Date.now()-new Date(iso))/36e5;return h<1?Math.round(h*60)+" min ago":h<48?Math.round(h)+" h ago":Math.round(h/24)+" days ago"}
+function nice(d){return new Date(d+"T00:00:00").toLocaleDateString("en-AU",{weekday:"short",day:"numeric",month:"short",year:"numeric"})}
+/* ---- Baggage assumptions: ONE passenger, ONE 20 kg checked bag on each flight (outbound and return). Nothing here is multiplied by family size. ----
+   aud:null means the fee is UNKNOWN. It is shown as unknown and never counted as A$0. Edit the numbers below to update every card. */
+var PAX=1,BAGS_PER_FLIGHT=1,BAG_KG=20;
+var VJ_NOTE="Vietjet Deluxe may be better value — recent example: about A$57 extra per flight, including 40 kg checked baggage, subject to live pricing.";
+var BAG={Vietjet:{aud:null,carry:0,vj:true,basis:"not added to totals, because Vietjet fares here are Kiwi indicative prices. Example only: "+VJ_NOTE+" The Eco fare includes a 7 kg carry-on, so no carry-on fee is added"},
+         Jetstar:{carry:33,carryBasis:"7 kg carry-on A$33 per flight, confirmed by your own check on jetstar.com",aud:58,basis:"20 kg checked bag A$58 per flight, confirmed by your own check on jetstar.com (shown there as the Starter Plus upgrade)"}};
+var AIR={SYD:"Sydney Kingsford Smith (SYD)",WSI:"Western Sydney International (WSI)",SGN:"Ho Chi Minh City (SGN)"};
+function an(c){return AIR[c]||c}
+function tripApt(t){var o=t.out.from||"SYD",b=t.back.to||"SYD";return o===b?o:"MIXED"}
+function safe(u){return typeof u==="string"&&/^https:\/\//.test(u)?u:null}
+function hasVJ(t){return t.out.airline==="Vietjet"||t.back.airline==="Vietjet"}
+var CF_HOME="https://www.cheapflights.com.au/";
+var CF_PREFILL=true; /* Format tested by you on 27 Oct 2026 for SYD-SGN: the page opened with the route and dates recognised. Nonstop/airline filters are NOT applied. Set false to open the search page only. */
+function cfDeep(t){return CF_HOME+"flight-search/"+t.out.from+"-"+t.out.to+"/"+t.depart+"/"+t.return+"/1adults"}
+function cfUrl(t){return CF_PREFILL?cfDeep(t):CF_HOME}
+function mkLink(u,txt,cls){var a=el("a",cls||null,txt);a.href=u;a.target="_blank";a.rel="noopener";return a}
+function legRow(l,label){
+  var d=el("div","lg"),m=el("div","lgm");
+  m.appendChild(el("b",null,label+" "+nice(l.date)));
+  m.appendChild(el("span",null," · "+l.from+" → "+l.to+" · "+l.airline+(l.flight?" "+l.flight:"")+" · "));
+  m.appendChild(el("b",null,"A$"+Math.round(l.price)));d.appendChild(m);
+  var u=safe(l.url);if(u)d.appendChild(mkLink(u,l.source.indexOf("kiwi")===0?"Check on Kiwi":"Check on Google Flights","lgl"));
+  return d}
+function totals(t){
+  var known=0,carry=0,vj=false;
+  [t.out,t.back].forEach(function(l){var c=BAG[l.airline];
+    if(c&&c.vj)vj=true;else if(c&&c.aud!=null){known+=c.aud*BAGS_PER_FLIGHT;carry+=c.carry||0}else vj=true});
+  return{extra:known+carry,bags:known,carry:carry,vj:vj,total:t.price+known+carry}}
+function summary(t){
+  var x=totals(t),b=el("div","sum");
+  function row(k,v,c){var d=el("div",c);d.appendChild(el("span",null,k));d.appendChild(el("span","v",v));b.appendChild(d)}
+  if(x.extra)row("Est. Jetstar bags + carry-on","A$"+x.extra);
+  if(x.vj)row("Vietjet bag","not included (see details)","unk");
+  row(x.vj?"Indicative total (incomplete)":"Estimated total","A$"+x.total,"tot");
+  return b}
+function details(t){
+  var d=el("details","fd"),s=el("summary",null,"Fare details");d.appendChild(s);
+  var w=el("div","det");
+  function p(k,v){var e=el("p");e.appendChild(el("b",null,k+": "));e.appendChild(document.createTextNode(v));w.appendChild(e)}
+  [["Outbound",t.out],["Return",t.back]].forEach(function(x){var l=x[1];
+    p(x[0],l.airline+(l.flight?" "+l.flight:"")+", seen "+ago(l.seen)+" ("+l.status+"), "+l.source+". "+l.baggage+". "+l.price_note)});
+  p("Baggage assumptions","1 passenger, "+BAGS_PER_FLIGHT+" × "+BAG_KG+" kg checked bag per flight. Jetstar: A$58 checked bag + A$33 carry-on (7 kg) per flight. Vietjet: bag not added. "+VJ_NOTE+" Alerts use the seat-only fare.");
+  if(hasVJ(t)){
+    p("Vietjet prices","Kiwi’s Vietjet prices have been nearly identical across many dates, so they may not reflect actual date-specific fares. On the one date pair compared, Vietjet’s own site differed; that is one example, not a rule.");
+    if(t.price<=D.cap)p("Alert","This deal is based on unconfirmed Kiwi indicative prices. Verify on Vietjet’s website before relying on it.");
+    var vl=[];[["outbound",t.out],["return",t.back]].forEach(function(q){if(q[1].airline==="Vietjet")vl.push(q[0]+" "+q[1].from+" to "+q[1].to+" on "+nice(q[1].date))});
+    p("Check on Vietjet",vl.join("; ")+" (enter the dates on the Vietjet site).")}
+  p("Cheapflights",CF_PREFILL?"Opens a Cheapflights search for "+t.out.from+" \u2192 "+t.out.to+", "+nice(t.depart)+" to "+nice(t.return)+", 1 adult. It is a manual search only: nonstop and airline filters are not applied, so set them yourself, and prices there may differ.":"Opens the Cheapflights search page; the dates are not prefilled. Enter "+t.out.from+" → "+t.out.to+", "+nice(t.depart)+" to "+nice(t.return)+", 1 adult.");
+  p("Unverified","Not confirmed bookable. Check the airline before booking.");
+  d.appendChild(w);return d}
+function card(t){
+  var c=el("div","card"+(t.price<=D.cap?" deal":"")),h=el("div","hero"),vj=hasVJ(t);
+  h.appendChild(el("div","amt"+(t.price<=D.cap?" deal":""),"A$"+t.price));
+  h.appendChild(el("div","lbl","seat-only return, per passenger"));
+  h.appendChild(el("div","dts",nice(t.depart)+" → "+nice(t.return)+" · "+t.days+" days"));
+  h.appendChild(el("div","rt",t.out.from+" → "+t.out.to+" → "+t.back.to+" · "+t.combo));
+  var ch=el("div","chips");
+  ch.appendChild(el("span","chip bad","Unverified"));
+  if(t.status!=="current")ch.appendChild(el("span","chip bad","Stale prices"));
+  if(t.price<=D.alert)ch.appendChild(el("span","chip ok","Urgent: at or under A$"+D.alert));
+  else if(t.price<=D.cap)ch.appendChild(el("span","chip ok","At or under A$"+D.cap));
+  h.appendChild(ch);
+  h.appendChild(el("div","soft",vj?"Kiwi fare is indicative — verify before booking.":"Fare is a reading — verify before booking."));
+  c.appendChild(h);c.appendChild(summary(t));
+  c.appendChild(legRow(t.out,"Out"));c.appendChild(legRow(t.back,"Back"));
+  var ac=el("div","acts");
+  if(vj)ac.appendChild(mkLink("https://www.vietjetair.com/en","Check price on Vietjet"));
+  ac.appendChild(mkLink(cfUrl(t),"Check on Cheapflights","sec"));
+  c.appendChild(ac);c.appendChild(details(t));return c}
+var AP="SYD";
+function setAp(v){AP=v;[].forEach.call(document.querySelectorAll(".tabs button"),function(b){b.setAttribute("aria-selected",b.dataset.ap===v?"true":"false")});render()}
+function render(){
+  var wsi=AP==="WSI";
+  document.getElementById("wsiCard").hidden=!wsi;document.getElementById("main1").hidden=wsi;document.getElementById("wsiLine").hidden=AP!=="ALL";
+  if(wsi)return;
+  var all=document.getElementById("all").checked,cur=document.getElementById("cur").checked,cb=document.getElementById("combo").value;
+  var rows=D.trips.filter(function(t){return(all||t.price<=D.cap)&&(!cur||t.status==="current")&&(!cb||t.combo===cb)});
+  renderTables(D.trips,AP);
+  var L=document.getElementById("list");L.textContent="";
+  var none=document.getElementById("none");
+  if(!rows.length){none.hidden=false;none.textContent=D.trips.length?"No trips match these filters. Cheapest overall: A$"+D.trips[0].price+" ("+D.trips[0].combo+", "+nice(D.trips[0].depart)+"). Tick 'Also show trips over A$"+D.cap+"' to see more.":"No combined trips yet: no outbound date has a matching return 12 or 15 days later with a price. This is not proof that no fares exist."}else none.hidden=true;
+  rows.slice(0,25).forEach(function(t){L.appendChild(card(t))});
+  if(rows.length>25)L.appendChild(el("p","sub","Showing the cheapest 25 of "+rows.length+"."))}
+function renderTables(base,ap){
+  var j=D,bc=document.querySelector("#byCombo tbody");bc.textContent="";
+  var seen={};base.forEach(function(t){seen[t.combo]=1});
+  Object.keys(seen).sort().forEach(function(c){var ts=base.filter(function(t){return t.combo===c}),b=ts[0],tr=el("tr");
+    [c,"A$"+b.price+" ("+b.status+")",nice(b.depart)+" to "+nice(b.return),String(ts.length)].forEach(function(x){tr.appendChild(el("td",null,x))});bc.appendChild(tr)});
+  var cv=document.querySelector("#cov tbody");cv.textContent="";
+  Object.keys(j.coverage).forEach(function(s){["out","back"].forEach(function(d){var x=j.coverage[s][d],tr=el("tr");
+    [s,d==="out"?"Outbound SYD to SGN":"Return SGN to SYD",String(x.dates_with_price),x.first?x.first+" to "+x.last:"none yet"].forEach(function(v){tr.appendChild(el("td",null,v))});cv.appendChild(tr)})});
+  if(ap==="ALL"){var tr=el("tr");["WSI","Both directions","0","not collected (unknown)"].forEach(function(v){tr.appendChild(el("td",null,v))});cv.appendChild(tr)}}
+function bagNote(){var n=document.getElementById("bagnote");n.textContent="";
+  [["For","1 passenger. Prices are per passenger, not multiplied for a family."],["Bags",BAGS_PER_FLIGHT+" × "+BAG_KG+" kg checked bag on each flight (outbound and return)."]].concat(Object.keys(BAG).map(function(k){return[k,BAG[k].vj?"Bag "+BAG[k].basis+".":(BAG[k].aud!=null?"about A$"+BAG[k].aud+" per bag per flight. "+BAG[k].basis+".":"UNKNOWN, not counted as A$0. "+BAG[k].basis+".")]})).concat([["Carry-on","Jetstar 7 kg carry-on A$33 per flight. Vietjet Eco includes a 7 kg carry-on (Vietjet baggage page), so none is added on Vietjet legs."],["Alerts","A$500 and A$400 alerts use the seat-only return fare."],["To change","Edit the BAG numbers near the top of the page script."]]).forEach(function(r){var p=el("p");p.appendChild(el("b",null,r[0]+": "));p.appendChild(document.createTextNode(r[1]));n.appendChild(p)})}
+function init(){
+  fetch("data/combined/trips.json?"+Date.now()).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){
+    D=j;D.trips=j.trips.filter(function(t){return tripApt(t)==="SYD"});/* WSI and mixed-airport trips stay out of every list until real WSI fares are collected */var m=document.getElementById("meta"),i=j.inputs;
+    m.textContent="Updated "+ago(j.updated)+" · Jetstar "+ago(i.jetstar_updated)+" · Kiwi Vietjet "+ago(i.kiwi_updated)+" (searched by hand)";
+    var seen={},sel=document.getElementById("combo");
+    D.trips.forEach(function(t){if(!seen[t.combo]){seen[t.combo]=1}});
+    Object.keys(seen).sort().forEach(function(c){var o=el("option",null,c);o.value=c;sel.appendChild(o)});
+    ["all","cur","combo"].forEach(function(id){document.getElementById(id).addEventListener("change",render)});
+    [].forEach.call(document.querySelectorAll(".tabs button"),function(b,i,all){b.addEventListener("click",function(){setAp(b.dataset.ap)});b.addEventListener("keydown",function(e){var k=e.key==="ArrowRight"?1:e.key==="ArrowLeft"?-1:0;if(k){var n=all[(i+k+all.length)%all.length];n.focus();setAp(n.dataset.ap)}})});
+    bagNote();render()}).catch(function(){var n=document.getElementById("none");n.hidden=false;n.textContent="No combined data yet. In the repo, open Actions, choose Combined fares merge, and select Run workflow.";document.getElementById("meta").textContent=""})}
+init();
+</script></body></html>
