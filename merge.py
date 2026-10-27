@@ -15,6 +15,9 @@ CAP, ALERT = 500, 400
 FRESH_HOURS = {"jetstar": 3, "kiwi": 12}     # older than this = stale
 USER = "danny1389-wq"
 JETSTAR_BAG = "Checked baggage not verified"
+# Estimated-total alerts: seat-only return fare + the baggage costs that are actually known (per passenger, 1 x 20 kg checked + 7 kg carry-on per flight).
+# Jetstar legs: A$58 checked + A$33 carry-on (confirmed by the user's own check). Vietjet legs: nothing added (no confirmed price), so the total is "so far".
+JETSTAR_BAG_AUD, JETSTAR_CARRY_AUD = 58, 33
 
 
 def load(path):
@@ -129,6 +132,42 @@ def alerts(trips, state, now, enabled):
     return todo
 
 
+def est_total(t):
+    """(estimated total so far, known baggage extras, True if a Vietjet leg's baggage is NOT included)."""
+    extra, vj = 0, False
+    for leg in (t["out"], t["back"]):
+        if leg["airline"] == "Jetstar":
+            extra += JETSTAR_BAG_AUD + JETSTAR_CARRY_AUD
+        else:
+            vj = True
+    return t["price"] + extra, extra, vj
+
+
+def total_alerts(trips, state):
+    """Same A$500 / A$400 thresholds and the same once-per-price dedupe as alerts(), but on the estimated total.
+    Uses its own memory keys (tdeal / turgent) so the seat-only alerts are not affected."""
+    todo = {"deal": [], "urgent": []}
+    cur = {t["id"]: t for t in trips if t["status"] == "current"}
+    for tid, st in state.items():
+        t = cur.get(tid)
+        if t and est_total(t)[0] > CAP:
+            st["tdeal"], st["turgent"] = None, None
+    for t in cur.values():
+        total = est_total(t)[0]
+        if total > CAP:
+            continue
+        st = state.setdefault(t["id"], {"deal": None, "urgent": None})
+        if st.get("tdeal") is None or total < st["tdeal"]:
+            todo["deal"].append(t)
+            st["tdeal"] = total
+        if total <= ALERT and (st.get("turgent") is None or total < st["turgent"]):
+            todo["urgent"].append(t)
+            st["turgent"] = total
+    todo["deal"].sort(key=lambda t: est_total(t)[0])
+    todo["urgent"].sort(key=lambda t: est_total(t)[0])
+    return todo
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
     now = datetime.now(timezone.utc)
@@ -170,6 +209,20 @@ def main():
     if todo["urgent"]:
         post_issue(f"ALERT - combined trip at or under A${ALERT}",
                    "\n".join([f"@{USER} **Trip at or under A${ALERT}.**", ""] + head + [row(t) for t in todo["urgent"]] + ["", note]))
+    ttodo = total_alerts(trips, state)
+    trow = lambda t: (f"| {t['depart']} to {t['return']} | {t['days']} days | **A${est_total(t)[0]}** | A${t['price']} | "
+                      f"{t['out']['airline']} {t['out'].get('flight') or ''} A${t['out']['price']:.0f} + {t['back']['airline']} {t['back'].get('flight') or ''} A${t['back']['price']:.0f} | "
+                      f"[out]({t['out']['url']}) [back]({t['back']['url']}) |")
+    thead = ["| Dates | Length | Est. total | Seat-only | Legs | Links |", "|---|---|---|---|---|---|"]
+    tnote = ("Estimated total per passenger = seat-only return fare + known baggage: Jetstar legs add A$58 checked bag + A$33 carry-on each. "
+             "Vietjet baggage is NOT included, so a total marked 'so far' will be higher (Vietjet Deluxe was about A$57 extra per flight in one recent example, subject to live pricing). "
+             "Vietjet fares are Kiwi indicative prices, not confirmed on Vietjet's website. Nothing here is confirmed bookable until you check the links.")
+    if ttodo["deal"]:
+        post_issue(f"Estimated total at or under A${CAP} {now:%Y-%m-%d %H:%M} UTC",
+                   "\n".join([f"@{USER} Trips with an estimated total (seat-only + known baggage) at or under A${CAP}:", ""] + thead + [trow(t) for t in ttodo["deal"][:15]] + ["", tnote]))
+    if ttodo["urgent"]:
+        post_issue(f"ALERT - estimated total at or under A${ALERT}",
+                   "\n".join([f"@{USER} **Estimated total at or under A${ALERT}.**", ""] + thead + [trow(t) for t in ttodo["urgent"]] + ["", tnote]))
     json.dump(state, open(f"{OUT}/state.json", "w", encoding="utf-8"))
 
 
