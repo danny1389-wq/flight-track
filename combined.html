@@ -93,6 +93,11 @@ var CF_HOME="https://www.cheapflights.com.au/";
 var CF_PREFILL=true; /* Format tested by you on 27 Oct 2026 for SYD-SGN: the page opened with the route and dates recognised. Nonstop/airline filters are NOT applied. Set false to open the search page only. */
 function cfDeep(t){return CF_HOME+"flight-search/"+t.out.from+"-"+t.out.to+"/"+t.depart+"/"+t.return+"/1adults"}
 function cfUrl(t){return CF_PREFILL?cfDeep(t):CF_HOME}
+var SK_HOME="https://www.skyscanner.com.au/";
+var SK_PREFILL=true; /* UNTESTED format: /transport/flights/{from}/{to}/{yymmdd}/{yymmdd}/?adultsv2=1&cabinclass=economy&rtn=1. Manual search link only. Set false to open the Skyscanner home page instead. */
+function yymmdd(d){return d.slice(2,4)+d.slice(5,7)+d.slice(8,10)}
+function skDeep(t){return SK_HOME+"transport/flights/"+t.out.from.toLowerCase()+"/"+t.out.to.toLowerCase()+"/"+yymmdd(t.depart)+"/"+yymmdd(t.return)+"/?adultsv2=1&cabinclass=economy&rtn=1"}
+function skUrl(t){return SK_PREFILL?skDeep(t):SK_HOME}
 function mkLink(u,txt,cls){var a=el("a",cls||null,txt);a.href=u;a.target="_blank";a.rel="noopener";return a}
 function legRow(l,label){
   var d=el("div","lg"),m=el("div","lgm");
@@ -126,6 +131,7 @@ function details(t){
     var vl=[];[["outbound",t.out],["return",t.back]].forEach(function(q){if(q[1].airline==="Vietjet")vl.push(q[0]+" "+q[1].from+" to "+q[1].to+" on "+nice(q[1].date))});
     p("Check on Vietjet",vl.join("; ")+" (enter the dates on the Vietjet site).")}
   p("Cheapflights",CF_PREFILL?"Opens a Cheapflights search for "+t.out.from+" \u2192 "+t.out.to+", "+nice(t.depart)+" to "+nice(t.return)+", 1 adult. It is a manual search only: nonstop and airline filters are not applied, so set them yourself, and prices there may differ.":"Opens the Cheapflights search page; the dates are not prefilled. Enter "+t.out.from+" → "+t.out.to+", "+nice(t.depart)+" to "+nice(t.return)+", 1 adult.");
+  p("Skyscanner",SK_PREFILL?"Opens a Skyscanner search for "+t.out.from+" \u2192 "+t.out.to+", "+nice(t.depart)+" to "+nice(t.return)+", 1 adult, economy. Manual search only: the dates may need checking, nonstop and airline filters are not applied, and prices there may differ.":"Opens the Skyscanner home page. Enter "+t.out.from+" \u2192 "+t.out.to+", "+nice(t.depart)+" to "+nice(t.return)+", 1 adult.");
   p("Unverified","Not confirmed bookable. Check the airline before booking.");
   d.appendChild(w);return d}
 function card(t){
@@ -145,7 +151,7 @@ function card(t){
   c.appendChild(legRow(t.out,"Out"));c.appendChild(legRow(t.back,"Back"));
   var ac=el("div","acts");
   if(vj)ac.appendChild(mkLink("https://www.vietjetair.com/en","Check price on Vietjet"));
-  ac.appendChild(mkLink(cfUrl(t),"Check on Cheapflights","sec"));
+  ac.appendChild(mkLink(cfUrl(t),"Check on Cheapflights","sec"));ac.appendChild(mkLink(skUrl(t),"Check on Skyscanner","sec"));
   c.appendChild(ac);c.appendChild(details(t));return c}
 var AP="SYD";
 function setAp(v){AP=v;[].forEach.call(document.querySelectorAll(".tabs button"),function(b){b.setAttribute("aria-selected",b.dataset.ap===v?"true":"false")});render()}
