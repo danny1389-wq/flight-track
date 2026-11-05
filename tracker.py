@@ -186,7 +186,8 @@ def main():
     manual = os.environ.get("EVENT") == "workflow_dispatch"
     ordered = sorted(trips.values(), key=lambda t: t["price"])
     deals = [t for t in ordered if t["price"] <= CAP]
-    if new_deals or summary_due or manual:
+    # Quiet mode: email only when a trip NEWLY drops to A$500 or under (no daily "nothing found" summary, no email for manual runs).
+    if new_deals:
         out = [f"@{USER} Fare update: Sydney to Ho Chi Minh City, nonstop Jetstar, 12 and 15 day trips.", ""]
         if new_deals:
             out += [f"**New: now at or under A${CAP}**", ""] + table(sorted(new_deals, key=lambda t: t["price"])) + [""]
