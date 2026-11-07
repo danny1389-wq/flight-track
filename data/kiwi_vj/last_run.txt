@@ -1,5 +1,5 @@
 SYD->SGN 2027-08-01..2027-08-07: 7 itineraries
-SYD->SGN 2027-08-08..2027-08-14: ERROR HTTP Error 503: Service Unavailable
+SYD->SGN 2027-08-08..2027-08-14: 7 itineraries
 SYD->SGN 2027-08-15..2027-08-21: 7 itineraries
 SYD->SGN 2027-08-22..2027-08-28: 7 itineraries
 SYD->SGN 2027-08-29..2027-09-04: 7 itineraries
@@ -20,4 +20,4 @@ SGN->SYD 2027-09-24..2027-09-30: 7 itineraries
 SGN->SYD 2027-10-01..2027-10-07: 3 itineraries
 SGN->SYD 2027-10-08..2027-10-14: 0 itineraries
 SGN->SYD 2027-10-15..2027-10-21: 0 itineraries
-22 requests. 57 outbound and 52 return dates with a price this run. 87 trips priced, 0 at or under A$500.
+22 requests. 64 outbound and 52 return dates with a price this run. 101 trips priced, 0 at or under A$500.
