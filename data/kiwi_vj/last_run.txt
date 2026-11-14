@@ -1,14 +1,14 @@
 SYD->SGN 2027-08-01..2027-08-07: 7 itineraries
 SYD->SGN 2027-08-08..2027-08-14: 7 itineraries
 SYD->SGN 2027-08-15..2027-08-21: 7 itineraries
-SYD->SGN 2027-08-22..2027-08-28: ERROR The read operation timed out
+SYD->SGN 2027-08-22..2027-08-28: 7 itineraries
 SYD->SGN 2027-08-29..2027-09-04: 7 itineraries
 SYD->SGN 2027-09-05..2027-09-11: 7 itineraries
 SYD->SGN 2027-09-12..2027-09-18: 7 itineraries
-SYD->SGN 2027-09-19..2027-09-25: 7 itineraries
+SYD->SGN 2027-09-19..2027-09-25: 8 itineraries
 SYD->SGN 2027-09-26..2027-10-02: 7 itineraries
 SYD->SGN 2027-10-03..2027-10-09: 7 itineraries
-SYD->SGN 2027-10-10..2027-10-16: 1 itineraries
+SYD->SGN 2027-10-10..2027-10-16: 2 itineraries
 SYD->SGN 2027-10-17..2027-10-23: 0 itineraries
 SYD->SGN 2027-10-24..2027-10-30: 0 itineraries
 SGN->SYD 2027-08-13..2027-08-19: 7 itineraries
@@ -22,4 +22,4 @@ SGN->SYD 2027-10-01..2027-10-07: 7 itineraries
 SGN->SYD 2027-10-08..2027-10-14: 2 itineraries
 SGN->SYD 2027-10-15..2027-10-21: 0 itineraries
 SGN->SYD 2027-10-22..2027-10-28: 0 itineraries
-24 requests. 64 outbound and 58 return dates with a price this run. 99 trips priced, 0 at or under A$500.
+24 requests. 72 outbound and 58 return dates with a price this run. 113 trips priced, 0 at or under A$500.
