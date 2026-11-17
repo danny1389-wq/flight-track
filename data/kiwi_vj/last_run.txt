@@ -5,7 +5,7 @@ SYD->SGN 2027-08-22..2027-08-28: 7 itineraries
 SYD->SGN 2027-08-29..2027-09-04: 7 itineraries
 SYD->SGN 2027-09-05..2027-09-11: 7 itineraries
 SYD->SGN 2027-09-12..2027-09-18: 7 itineraries
-SYD->SGN 2027-09-19..2027-09-25: 7 itineraries
+SYD->SGN 2027-09-19..2027-09-25: 8 itineraries
 SYD->SGN 2027-09-26..2027-10-02: 7 itineraries
 SYD->SGN 2027-10-03..2027-10-09: 7 itineraries
 SYD->SGN 2027-10-10..2027-10-16: 4 itineraries
